@@ -13184,6 +13184,7 @@ const rest_1 = __nccwpck_require__(5375);
     const pullNumber = pullRequest.number;
     console.log('pr :: ', github.context.payload.pull_request);
     const auth = core.getInput('repo-token', { required: true });
+    console.log('auth :: ', auth);
     const octokit = new rest_1.Octokit({
         auth,
     });

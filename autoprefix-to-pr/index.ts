@@ -16,6 +16,7 @@ import { Octokit } from '@octokit/rest';
     console.log('pr :: ', github.context.payload.pull_request);
 
     const auth = core.getInput('repo-token', { required: true });
+    console.log('auth :: ', auth);
     const octokit = new Octokit({
         auth,
     });
