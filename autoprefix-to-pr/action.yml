@@ -1,0 +1,9 @@
+name: "autoprefix-to-pr"
+description: "Automatically set prefix to pr title "
+runs:
+  using: "node16"
+  main: "dist/index.js"
+inputs:
+  repo-token:
+    description: "repo-auto-token"
+    required: true
