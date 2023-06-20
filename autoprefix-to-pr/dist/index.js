@@ -13251,7 +13251,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
         filter: `mini-web/prd*`,
         orderBy: 'desc',
     });
-    const { stdout: tags2 } = yield exec([`git`, `describe`, `--abbrev=0`, newTag].join(' '));
+    const { stdout: tags2 } = yield exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
     console.log('tags :: ', tags);
     console.log('tags2 :: ', tags2);
     // await octokit.rest.pulls.update({
