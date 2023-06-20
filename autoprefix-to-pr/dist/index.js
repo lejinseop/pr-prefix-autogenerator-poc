@@ -13226,7 +13226,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     // console.log('payload :: ', github.context.payload);
     console.log('ref :: ', github.context.ref);
     console.log('after ::: ', github.context.payload.after);
-    const ref = github.context.ref;
+    const newTag = github.context.ref.replace('refs/tags/', '');
     const after = github.context.payload.after;
     console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
@@ -13251,7 +13251,9 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
         filter: `mini-web/prd*`,
         orderBy: 'desc',
     });
+    const { stdout: tags2 } = yield exec([`git`, `describe`, `--abbrev=0`, newTag].join(' '));
     console.log('tags :: ', tags);
+    console.log('tags2 :: ', tags2);
     // await octokit.rest.pulls.update({
     //     owner,
     //     repo,
