@@ -50,7 +50,7 @@ const exec = promisify(childProcess.exec);
         orderBy: 'desc',
     });
 
-    const { stdout: tags2 } = await exec([`git`, `describe`, `--abbrev=0`, newTag].join(' '));
+    const { stdout: tags2 } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
 
     console.log('tags :: ', tags);
     console.log('tags2 :: ', tags2);
