@@ -20,6 +20,8 @@ const exec = promisify(childProcess.exec);
     // console.log('payload :: ', github.context.payload);
     console.log('ref :: ', github.context.ref);
     console.log('after ::: ', github.context.payload.after);
+    const ref = github.context.ref;
+    const after = github.context.payload.after;
     console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
 
@@ -28,6 +30,13 @@ const exec = promisify(childProcess.exec);
     const octokit = new Octokit({
         auth,
     });
+
+    const tag = await octokit.rest.git.getTag({
+        owner,
+        repo,
+        tag_sha: ref,
+    });
+    console.log('tag ::: ', tag);
 
     // await octokit.rest.pulls.update({
     //     owner,

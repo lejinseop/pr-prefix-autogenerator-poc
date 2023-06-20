@@ -13191,6 +13191,8 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     // console.log('payload :: ', github.context.payload);
     console.log('ref :: ', github.context.ref);
     console.log('after ::: ', github.context.payload.after);
+    const ref = github.context.ref;
+    const after = github.context.payload.after;
     console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
     const auth = core.getInput('repo-token', { required: true });
@@ -13198,6 +13200,12 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
+    const tag = yield octokit.rest.git.getTag({
+        owner,
+        repo,
+        tag_sha: ref,
+    });
+    console.log('tag ::: ', tag);
     // await octokit.rest.pulls.update({
     //     owner,
     //     repo,
