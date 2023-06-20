@@ -1,6 +1,10 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
+import { promisify } from 'util';
+import childProcess from 'child_process';
+
+const exec = promisify(childProcess.exec);
 
 (async () => {
     const { owner, repo } = github.context.repo;
