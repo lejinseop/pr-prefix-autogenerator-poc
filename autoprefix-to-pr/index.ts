@@ -3,6 +3,7 @@ import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
 import { promisify } from 'util';
 import childProcess from 'child_process';
+import getTagsFromRemote from './getTagsFromRemote';
 
 const exec = promisify(childProcess.exec);
 
@@ -31,12 +32,20 @@ const exec = promisify(childProcess.exec);
         auth,
     });
 
-    const tag = await octokit.rest.git.getTag({
-        owner,
-        repo,
-        tag_sha: ref,
+    const tags = await getTagsFromRemote({
+        filterBy: {},
+        orderBy: {
+            field: 'TAG_COMMIT_DATE',
+            direction: 'DESC',
+        },
+        pagination: {
+            pageSize: {
+                first: 10
+            }
+        }
     });
-    console.log('tag ::: ', tag);
+
+    console.log('tags :: ', tags);
 
     // await octokit.rest.pulls.update({
     //     owner,

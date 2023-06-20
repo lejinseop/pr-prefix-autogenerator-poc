@@ -13132,6 +13132,84 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 2811:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const graphql_1 = __nccwpck_require__(8467);
+const TAG_REFS = 'refs/tags/';
+const ORG_NAME = 'birdviewdev';
+const REPO_NAME = 'fe-monorepo';
+const GIT_REPOSITORY_API_TOKEN = process.env.GIT_REPOSITORY_API_TOKEN || '';
+const getTagsFromRemote = ({ filterBy = {}, orderBy, pagination, }) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    const { repository } = yield (0, graphql_1.graphql)(`
+      query getRefs(
+        $owner: String!
+        $name: String!
+        $refPrefix: String!
+        $like: String
+        $first: Int
+        $last: Int
+        $before: String
+        $after: String
+        $field: RefOrderField!
+        $direction: OrderDirection!
+      ) {
+        repository(owner: $owner, name: $name) {
+          refs(
+            refPrefix: $refPrefix
+            first: $first
+            last: $last
+            before: $before
+            after: $after
+            query: $like
+            orderBy: { field: $field, direction: $direction }
+          ) {
+            edges {
+              node {
+                name
+                target {
+                  oid
+                }
+              }
+            }
+          }
+        }
+      }
+    `, {
+        headers: {
+            authorization: `token ${GIT_REPOSITORY_API_TOKEN}`,
+        },
+        owner: ORG_NAME,
+        name: REPO_NAME,
+        refPrefix: TAG_REFS,
+        like: filterBy.tagname,
+        first: (_a = pagination.pageSize) === null || _a === void 0 ? void 0 : _a.first,
+        last: (_b = pagination.pageSize) === null || _b === void 0 ? void 0 : _b.last,
+        before: (_c = pagination.page) === null || _c === void 0 ? void 0 : _c.before,
+        after: (_d = pagination.page) === null || _d === void 0 ? void 0 : _d.after,
+        field: orderBy.field,
+        direction: orderBy.direction,
+    });
+    return repository.refs.edges;
+});
+exports["default"] = getTagsFromRemote;
+
+
+/***/ }),
+
 /***/ 4177:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13178,6 +13256,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const getTagsFromRemote_1 = __importDefault(__nccwpck_require__(2811));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
@@ -13200,12 +13279,19 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    const tag = yield octokit.rest.git.getTag({
-        owner,
-        repo,
-        tag_sha: ref,
+    const tags = yield (0, getTagsFromRemote_1.default)({
+        filterBy: {},
+        orderBy: {
+            field: 'TAG_COMMIT_DATE',
+            direction: 'DESC',
+        },
+        pagination: {
+            pageSize: {
+                first: 10
+            }
+        }
     });
-    console.log('tag ::: ', tag);
+    console.log('tags :: ', tags);
     // await octokit.rest.pulls.update({
     //     owner,
     //     repo,
