@@ -13169,31 +13169,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const rest_1 = __nccwpck_require__(5375);
+const util_1 = __nccwpck_require__(3837);
+const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const exec = (0, util_1.promisify)(child_process_1.default.exec);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
-    if (!pullRequest) {
-        console.warn('Pull request does not exists');
-        return;
-    }
-    const title = pullRequest.title;
-    const pullNumber = pullRequest.number;
+    // if (!pullRequest) {
+    //     console.warn('Pull request does not exists');
+    //     return;
+    // }
+    // const title = pullRequest.title as string;
+    // const pullNumber = pullRequest.number;
+    console.log('payload :: ', github.context.payload);
+    console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
     const auth = core.getInput('repo-token', { required: true });
     console.log('auth :: ', auth);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    yield octokit.rest.pulls.update({
-        owner,
-        repo,
-        pull_number: pullNumber,
-        title: `${title} [test-suffix]`,
-    });
+    // await octokit.rest.pulls.update({
+    //     owner,
+    //     repo,
+    //     pull_number: pullNumber,
+    //     title: `${title} [test-suffix]`,
+    // });
     console.log('Succed executed');
 }))();
 
@@ -13213,6 +13221,14 @@ module.exports = eval("require")("encoding");
 
 "use strict";
 module.exports = require("assert");
+
+/***/ }),
+
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
