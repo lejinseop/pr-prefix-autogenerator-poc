@@ -17,6 +17,8 @@ const exec = promisify(childProcess.exec);
 
     const title = pullRequest.title as string;
     const pullNumber = pullRequest.number;
+    console.log('payload :: ', github.context.payload);
+    console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
 
     const auth = core.getInput('repo-token', { required: true });
