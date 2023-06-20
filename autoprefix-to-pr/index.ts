@@ -3,8 +3,6 @@ import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
 import { promisify } from 'util';
 import childProcess from 'child_process';
-import getTagsFromRemote from './getTagsFromRemote';
-import getTags from './getTags';
 
 const exec = promisify(childProcess.exec);
 
@@ -20,40 +18,34 @@ const exec = promisify(childProcess.exec);
     // const title = pullRequest.title as string;
     // const pullNumber = pullRequest.number;
     // console.log('payload :: ', github.context.payload);
-    console.log('ref :: ', github.context.ref);
-    console.log('after ::: ', github.context.payload.after);
     const newTag = github.context.ref.replace('refs/tags/', '');
-    const after = github.context.payload.after;
-    console.log('====================================');
-    console.log('pr :: ', github.context.payload.pull_request);
 
     const auth = core.getInput('repo-token', { required: true });
-    console.log('auth :: ', auth);
+
     const octokit = new Octokit({
         auth,
     });
 
-    // const tags = await getTagsFromRemote({
-    //     filterBy: {},
-    //     orderBy: {
-    //         field: 'TAG_COMMIT_DATE',
-    //         direction: 'DESC',
-    //     },
-    //     pagination: {
-    //         pageSize: {
-    //             first: 10
-    //         }
-    //     }
-    // });
-    const tags = await getTags({
-        filter: `mini-web/prd*`,
-        orderBy: 'desc',
-    });
+    const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
 
-    const { stdout: tags2 } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+    console.log('latestTag :: ', latestTag);
+    console.log('newTag :: ', newTag);
 
-    console.log('tags :: ', tags);
-    console.log('tags2 :: ', tags2);
+    const timeline = octokit.paginate.iterator(
+        octokit.repos.compareCommits.endpoint.merge({
+            owner,
+            repo,
+            base: latestTag,
+            head: newTag,
+        })
+    );
+
+    const commitItems = [];
+    for await (const response of timeline) {
+        const { data: compareCommits } = response;
+        console.log('compareCommits :: ', compareCommits);
+        // commitItems.push(...compareCommits.commits)
+    }
 
     // await octokit.rest.pulls.update({
     //     owner,

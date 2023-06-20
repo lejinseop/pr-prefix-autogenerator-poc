@@ -13132,40 +13132,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 435:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const util_1 = __nccwpck_require__(3837);
-const child_process_1 = __importDefault(__nccwpck_require__(2081));
-const exec = (0, util_1.promisify)(child_process_1.default.exec);
-const ORDER_BY_OPTION_MAP = {
-    desc: '--sort=-v:refname',
-    asc: '--sort=v:refname',
-};
-const getTags = ({ filter, orderBy = 'asc' }) => __awaiter(void 0, void 0, void 0, function* () {
-    const { stdout: tagsString } = yield exec([`git`, `tag`, `-l`, ...(filter ? [filter] : []), ORDER_BY_OPTION_MAP[orderBy]].join(' '));
-    return (tagsString === null || tagsString === void 0 ? void 0 : tagsString.split('\n')) || [];
-});
-exports["default"] = getTags;
-
-
-/***/ }),
-
 /***/ 4177:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13203,6 +13169,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -13212,9 +13185,9 @@ const github = __importStar(__nccwpck_require__(5438));
 const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
-const getTags_1 = __importDefault(__nccwpck_require__(435));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, e_1, _b, _c;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     // if (!pullRequest) {
@@ -13224,36 +13197,37 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     // const title = pullRequest.title as string;
     // const pullNumber = pullRequest.number;
     // console.log('payload :: ', github.context.payload);
-    console.log('ref :: ', github.context.ref);
-    console.log('after ::: ', github.context.payload.after);
     const newTag = github.context.ref.replace('refs/tags/', '');
-    const after = github.context.payload.after;
-    console.log('====================================');
-    console.log('pr :: ', github.context.payload.pull_request);
     const auth = core.getInput('repo-token', { required: true });
-    console.log('auth :: ', auth);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    // const tags = await getTagsFromRemote({
-    //     filterBy: {},
-    //     orderBy: {
-    //         field: 'TAG_COMMIT_DATE',
-    //         direction: 'DESC',
-    //     },
-    //     pagination: {
-    //         pageSize: {
-    //             first: 10
-    //         }
-    //     }
-    // });
-    const tags = yield (0, getTags_1.default)({
-        filter: `mini-web/prd*`,
-        orderBy: 'desc',
-    });
-    const { stdout: tags2 } = yield exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
-    console.log('tags :: ', tags);
-    console.log('tags2 :: ', tags2);
+    const { stdout: latestTag } = yield exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+    console.log('latestTag :: ', latestTag);
+    console.log('newTag :: ', newTag);
+    const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
+        owner,
+        repo,
+        base: latestTag,
+        head: newTag,
+    }));
+    const commitItems = [];
+    try {
+        for (var _d = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _a = timeline_1_1.done, !_a; _d = true) {
+            _c = timeline_1_1.value;
+            _d = false;
+            const response = _c;
+            const { data: compareCommits } = response;
+            console.log('compareCommits :: ', compareCommits);
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (!_d && !_a && (_b = timeline_1.return)) yield _b.call(timeline_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
     // await octokit.rest.pulls.update({
     //     owner,
     //     repo,
