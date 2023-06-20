@@ -4,6 +4,7 @@ import { Octokit } from '@octokit/rest';
 import { promisify } from 'util';
 import childProcess from 'child_process';
 import getTagsFromRemote from './getTagsFromRemote';
+import getTags from './getTags';
 
 const exec = promisify(childProcess.exec);
 
@@ -32,17 +33,21 @@ const exec = promisify(childProcess.exec);
         auth,
     });
 
-    const tags = await getTagsFromRemote({
-        filterBy: {},
-        orderBy: {
-            field: 'TAG_COMMIT_DATE',
-            direction: 'DESC',
-        },
-        pagination: {
-            pageSize: {
-                first: 10
-            }
-        }
+    // const tags = await getTagsFromRemote({
+    //     filterBy: {},
+    //     orderBy: {
+    //         field: 'TAG_COMMIT_DATE',
+    //         direction: 'DESC',
+    //     },
+    //     pagination: {
+    //         pageSize: {
+    //             first: 10
+    //         }
+    //     }
+    // });
+    const tags = await getTags({
+        filter: `mini-web/prd*`,
+        orderBy: 'desc',
     });
 
     console.log('tags :: ', tags);
