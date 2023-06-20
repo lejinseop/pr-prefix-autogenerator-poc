@@ -18,6 +18,7 @@ const exec = promisify(childProcess.exec);
     // const title = pullRequest.title as string;
     // const pullNumber = pullRequest.number;
     // console.log('payload :: ', github.context.payload);
+    console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
 
     const auth = core.getInput('repo-token', { required: true });

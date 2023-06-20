@@ -13197,6 +13197,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     // const title = pullRequest.title as string;
     // const pullNumber = pullRequest.number;
     // console.log('payload :: ', github.context.payload);
+    console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
     const auth = core.getInput('repo-token', { required: true });
     const octokit = new rest_1.Octokit({
