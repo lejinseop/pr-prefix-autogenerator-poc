@@ -13188,7 +13188,9 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     // }
     // const title = pullRequest.title as string;
     // const pullNumber = pullRequest.number;
-    console.log('payload :: ', github.context.payload);
+    // console.log('payload :: ', github.context.payload);
+    console.log('ref :: ', github.context.ref);
+    console.log('after ::: ', github.context.payload.after);
     console.log('====================================');
     console.log('pr :: ', github.context.payload.pull_request);
     const auth = core.getInput('repo-token', { required: true });
