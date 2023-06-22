@@ -1,0 +1,10 @@
+name: "release-notegen"
+description: "release-notegen"
+runs:
+  using: "node16"
+  main: "dist/index.js"
+inputs:
+  repo-token:
+    permissions: "write-all"
+    description: "repo-auto-token"
+    required: true
