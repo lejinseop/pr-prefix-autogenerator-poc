@@ -29,7 +29,7 @@ const exec = promisify(childProcess.exec);
     const octokit = new Octokit({
         auth,
     });
-    // const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
+
     const tags = await getTags({
         filter: `${newTag.split('-')[0]}-*`,
         orderBy: 'desc',
@@ -38,8 +38,10 @@ const exec = promisify(childProcess.exec);
     console.log('tags :: ', tags);
 
     const latestTag = tags[1];
+    const latestTagID = await getTagID(latestTag);
 
     console.log('latestTag :: ', latestTag);
+    console.log('latestTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
 
@@ -47,7 +49,7 @@ const exec = promisify(childProcess.exec);
         octokit.repos.compareCommits.endpoint.merge({
             owner,
             repo,
-            base: 'latestTagID',
+            base: latestTagID,
             head: newTagID,
         })
     );

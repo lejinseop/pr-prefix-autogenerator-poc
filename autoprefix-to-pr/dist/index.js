@@ -13132,6 +13132,36 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 9111:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const util_1 = __nccwpck_require__(3837);
+const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const exec = (0, util_1.promisify)(child_process_1.default.exec);
+const getTagID = (tag) => __awaiter(void 0, void 0, void 0, function* () {
+    const { stdout: tagID } = yield exec([`git`, `rev-parse`, tag].join(' '));
+    return tagID;
+});
+exports["default"] = getTagID;
+
+
+/***/ }),
+
 /***/ 435:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13219,6 +13249,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const getTagID_1 = __importDefault(__nccwpck_require__(9111));
 const getTags_1 = __importDefault(__nccwpck_require__(435));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
 (() => __awaiter(void 0, void 0, void 0, function* () {
@@ -13239,20 +13270,21 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    // const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
     const tags = yield (0, getTags_1.default)({
         filter: `${newTag.split('-')[0]}-*`,
         orderBy: 'desc',
     });
     console.log('tags :: ', tags);
     const latestTag = tags[1];
+    const latestTagID = yield (0, getTagID_1.default)(latestTag);
     console.log('latestTag :: ', latestTag);
+    console.log('latestTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
     const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
         owner,
         repo,
-        base: 'latestTagID',
+        base: latestTagID,
         head: newTagID,
     }));
     const commitItems = [];
