@@ -13204,7 +13204,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    const { stdout: latestTagAndID } = yield exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+    const { stdout: latestTagAndID } = yield exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
     const regex = /^(.*)-(\w+)$/;
     const match = latestTagAndID.match(regex);
     if (!match) {
@@ -13219,8 +13219,8 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
         owner,
         repo,
-        base: latestTag,
-        head: newTag,
+        base: latestTagID,
+        head: newTagID,
     }));
     const commitItems = [];
     try {

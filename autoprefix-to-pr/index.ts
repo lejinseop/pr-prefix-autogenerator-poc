@@ -28,7 +28,7 @@ const exec = promisify(childProcess.exec);
         auth,
     });
 
-    const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+    const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
 
     const regex = /^(.*)-(\w+)$/;
     const match = latestTagAndID.match(regex);
@@ -49,8 +49,8 @@ const exec = promisify(childProcess.exec);
         octokit.repos.compareCommits.endpoint.merge({
             owner,
             repo,
-            base: latestTag,
-            head: newTag,
+            base: latestTagID,
+            head: newTagID,
         })
     );
 
