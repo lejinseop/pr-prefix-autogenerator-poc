@@ -19,7 +19,7 @@ const solution1 = async () => {
 
     const title = pullRequest.title as string;
     const pullNumber = pullRequest.number;
-    const pullLabel = pullRequest.labels;
+    const pullLabel: string[] = pullRequest.labels.map((label: any) => label.name);
     const mergeCommitID = pullRequest.merge_commit_sha;
 
     console.log('context :: ', github.context);
@@ -30,8 +30,8 @@ const solution1 = async () => {
     console.log('mergeCommitID :: ', mergeCommitID);
     console.log('=======================================');
 
-    const newTag = github.context.ref.replace('refs/tags/', '');
-    const newTagID: string = github.context.payload.after;
+    // const newTag = github.context.ref.replace('refs/tags/', '');
+    // const newTagID: string = github.context.payload.after;
 
     const auth = core.getInput('repo-token', { required: true });
 
@@ -39,36 +39,74 @@ const solution1 = async () => {
         auth,
     });
 
-    const tags = await getTags({
-        filter: `${newTag.split('-')[0]}-*`,
-        orderBy: 'desc',
+    const { data: mainBranch } = await octokit.rest.repos.getBranch({
+        owner,
+        repo,
+        branch: "main",
     });
 
-    console.log('tags :: ', tags);
+    const mainCommitSHA = mainBranch.commit.sha;
 
-    const latestTag = tags[1];
-    const latestTagID = await getTagID(latestTag);
+    const { data: mainCommit } = await octokit.rest.git.getCommit({
+        owner,
+        repo,
+        commit_sha: mainCommitSHA,
+    });
 
-    console.log('latestTag :: ', latestTag);
-    console.log('latestTagID :: ', latestTagID);
-    console.log('newTag :: ', newTag);
-    console.log('newTagID :: ', newTagID);
+    const commitMessage = mainCommit.message + "\n\nHELLO WORLD";
+    console.log('mainCommit ::: ', mainCommit);
+    const { data: newTree } = await octokit.rest.git.createTree({
+        owner,
+        repo,
+        base_tree: mainCommit.tree.sha,
+        tree: (mainCommit.tree as any).tree,
+    });
 
-    const timeline = octokit.paginate.iterator(
-        octokit.repos.compareCommits.endpoint.merge({
-            owner,
-            repo,
-            base: latestTagID.substring(0, 7),
-            head: newTagID.substring(0, 7),
-        })
-    );
+    const { data: newCommit } = await octokit.rest.git.createCommit({
+        owner,
+        repo,
+        message: commitMessage,
+        tree: newTree.sha,
+    });
 
-    const commitItems = [];
-    for await (const response of timeline) {
-        const { data: compareCommits } = response;
-        console.log('compareCommits :: ', compareCommits);
-        // commitItems.push(...compareCommits.commits)
-    }
+    await octokit.rest.git.updateRef({
+        owner,
+        repo,
+        ref: "heads/main",
+        sha: newCommit.sha,
+        force: true,
+    });
+
+    
+    // const tags = await getTags({
+    //     filter: `${newTag.split('-')[0]}-*`,
+    //     orderBy: 'desc',
+    // });
+
+    // console.log('tags :: ', tags);
+
+    // const latestTag = tags[1];
+    // const latestTagID = await getTagID(latestTag);
+
+    // console.log('latestTag :: ', latestTag);
+    // console.log('latestTagID :: ', latestTagID);
+    // console.log('newTag :: ', newTag);
+    // console.log('newTagID :: ', newTagID);
+
+    // const timeline = octokit.paginate.iterator(
+    //     octokit.repos.compareCommits.endpoint.merge({
+    //         owner,
+    //         repo,
+    //         base: latestTagID.substring(0, 7),
+    //         head: newTagID.substring(0, 7),
+    //     })
+    // );
+
+    // const commitItems = [];
+    // for await (const response of timeline) {
+    //     const { data: compareCommits } = response;
+    //     console.log('compareCommits :: ', compareCommits);
+    // }
 
     // await octokit.rest.pulls.update({
     //     owner,
