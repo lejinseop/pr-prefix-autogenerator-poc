@@ -29,7 +29,7 @@ const exec = promisify(childProcess.exec);
     });
 
     const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
-
+    console.log('latestTagAndID ::: ', latestTagAndID);
     const regex = /^(.*)-(\w+)$/;
     const match = latestTagAndID.match(regex);
 

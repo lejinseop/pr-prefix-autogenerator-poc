@@ -13205,6 +13205,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
         auth,
     });
     const { stdout: latestTagAndID } = yield exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
+    console.log('latestTagAndID ::: ', latestTagAndID);
     const regex = /^(.*)-(\w+)$/;
     const match = latestTagAndID.match(regex);
     if (!match) {
