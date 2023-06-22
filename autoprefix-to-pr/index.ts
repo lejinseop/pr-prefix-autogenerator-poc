@@ -75,13 +75,13 @@ const solution2 = async () => {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
 
-    if (!pullRequest) {
-        console.warn('Pull request does not exists');
-        return;
-    }
+    // if (!pullRequest) {
+    //     console.warn('Pull request does not exists');
+    //     return;
+    // }
 
-    const title = pullRequest.title as string;
-    const pullNumber = pullRequest.number;
+    // const title = pullRequest.title as string;
+    // const pullNumber = pullRequest.number;
     console.log('payload :: ', github.context.payload);
     console.log('context :: ', github.context);
 
