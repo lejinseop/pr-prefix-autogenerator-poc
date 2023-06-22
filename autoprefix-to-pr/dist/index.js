@@ -13256,14 +13256,21 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
-    // if (!pullRequest) {
-    //     console.warn('Pull request does not exists');
-    //     return;
-    // }
-    // const title = pullRequest.title as string;
-    // const pullNumber = pullRequest.number;
-    // console.log('payload :: ', github.context.payload);
+    if (!pullRequest) {
+        console.warn('Pull request does not exists');
+        return;
+    }
+    const title = pullRequest.title;
+    const pullNumber = pullRequest.number;
+    const pullLabel = pullRequest.labels;
+    const mergeCommitID = pullRequest.merge_commit_sha;
     console.log('context :: ', github.context);
+    console.log('=======================================');
+    console.log('pr title :: ', title);
+    console.log('pr nnumber :: ', pullNumber);
+    console.log('pr label :: ', pullLabel);
+    console.log('mergeCommitID :: ', mergeCommitID);
+    console.log('=======================================');
     const newTag = github.context.ref.replace('refs/tags/', '');
     const newTagID = github.context.payload.after;
     const auth = core.getInput('repo-token', { required: true });
