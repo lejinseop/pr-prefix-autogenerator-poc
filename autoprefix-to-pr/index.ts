@@ -20,6 +20,7 @@ const exec = promisify(childProcess.exec);
     // console.log('payload :: ', github.context.payload);
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
+    const newTagID: string = github.context.payload.after;
 
     const auth = core.getInput('repo-token', { required: true });
 
@@ -27,10 +28,22 @@ const exec = promisify(childProcess.exec);
         auth,
     });
 
-    const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+    const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `--abbrev=0`, `${newTag}^`].join(' '));
+
+    const regex = /^(.*)-(\w+)$/;
+    const match = latestTagAndID.match(regex);
+
+    if (!match) {
+        return;
+    }
+
+    const latestTag = match[1];
+    const latestTagID = match[2];
 
     console.log('latestTag :: ', latestTag);
+    console.log('lastTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
+    console.log('newTagID :: ', newTagID);
 
     const timeline = octokit.paginate.iterator(
         octokit.repos.compareCommits.endpoint.merge({
