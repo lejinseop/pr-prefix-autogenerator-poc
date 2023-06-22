@@ -13315,12 +13315,12 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
 const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
-    if (!pullRequest) {
-        console.warn('Pull request does not exists');
-        return;
-    }
-    const title = pullRequest.title;
-    const pullNumber = pullRequest.number;
+    // if (!pullRequest) {
+    //     console.warn('Pull request does not exists');
+    //     return;
+    // }
+    // const title = pullRequest.title as string;
+    // const pullNumber = pullRequest.number;
     console.log('payload :: ', github.context.payload);
     console.log('context :: ', github.context);
     console.log('Succed executed');
