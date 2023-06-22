@@ -13284,8 +13284,8 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
         owner,
         repo,
-        base: latestTagID,
-        head: newTagID,
+        base: latestTagID.substring(0, 7),
+        head: newTagID.substring(0, 7),
     }));
     const commitItems = [];
     try {
