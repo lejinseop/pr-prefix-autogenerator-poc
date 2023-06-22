@@ -1,12 +1,13 @@
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
   autoprefix-to-pr:
     runs-on: ubuntu-latest
     name: autoprefixToPR
+    if: ${{ github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged == true }}
     permissions:
       pull-requests: write
     steps:
