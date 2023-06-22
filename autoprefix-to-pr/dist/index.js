@@ -13204,6 +13204,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
+    console.log('newTag :: ', newTag);
     const { stdout: latestTagAndID } = yield exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
     console.log('latestTagAndID ::: ', latestTagAndID);
     const regex = /^(.*)-(\w+)$/;

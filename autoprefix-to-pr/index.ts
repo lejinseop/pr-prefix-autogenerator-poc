@@ -27,9 +27,9 @@ const exec = promisify(childProcess.exec);
     const octokit = new Octokit({
         auth,
     });
-
+    console.log('newTag :: ', newTag);
     const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
-    console.log('latestTagAndID ::: ', latestTagAndID);
+    console.log('latestTagAndID ::: ', latestTagAndID)
     const regex = /^(.*)-(\w+)$/;
     const match = latestTagAndID.match(regex);
 
