@@ -13132,6 +13132,40 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 435:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const util_1 = __nccwpck_require__(3837);
+const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const exec = (0, util_1.promisify)(child_process_1.default.exec);
+const ORDER_BY_OPTION_MAP = {
+    desc: '--sort=-v:refname',
+    asc: '--sort=v:refname',
+};
+const getTags = ({ filter, orderBy = 'asc' }) => __awaiter(void 0, void 0, void 0, function* () {
+    const { stdout: tagsString } = yield exec([`git`, `tag`, `-l`, ...(filter ? [filter] : []), ORDER_BY_OPTION_MAP[orderBy]].join(' '));
+    return (tagsString === null || tagsString === void 0 ? void 0 : tagsString.split('\n')) || [];
+});
+exports["default"] = getTags;
+
+
+/***/ }),
+
 /***/ 4177:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13185,6 +13219,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
+const getTags_1 = __importDefault(__nccwpck_require__(435));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;
@@ -13204,24 +13239,20 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
     const octokit = new rest_1.Octokit({
         auth,
     });
-    console.log('newTag :: ', newTag);
-    const { stdout: latestTagAndID } = yield exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
-    console.log('latestTagAndID ::: ', latestTagAndID);
-    const regex = /^(.*)-(\w+)$/;
-    const match = latestTagAndID.match(regex);
-    if (!match) {
-        return;
-    }
-    const latestTag = match[1];
-    const latestTagID = match[2];
+    // const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
+    const tags = yield (0, getTags_1.default)({
+        filter: `${newTag.split('-')[0]}-*`,
+        orderBy: 'desc',
+    });
+    console.log('tags :: ', tags);
+    const latestTag = tags[1];
     console.log('latestTag :: ', latestTag);
-    console.log('lastTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
     const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
         owner,
         repo,
-        base: latestTagID,
+        base: 'latestTagID',
         head: newTagID,
     }));
     const commitItems = [];

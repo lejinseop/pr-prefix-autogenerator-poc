@@ -3,6 +3,8 @@ import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
 import { promisify } from 'util';
 import childProcess from 'child_process';
+import getTagID from './getTagID';
+import getTags from './getTags';
 
 const exec = promisify(childProcess.exec);
 
@@ -27,21 +29,17 @@ const exec = promisify(childProcess.exec);
     const octokit = new Octokit({
         auth,
     });
-    console.log('newTag :: ', newTag);
-    const { stdout: latestTagAndID } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
-    console.log('latestTagAndID ::: ', latestTagAndID)
-    const regex = /^(.*)-(\w+)$/;
-    const match = latestTagAndID.match(regex);
+    // const { stdout: latestTag } = await exec([`git`, `describe`, `--tags`, `${newTag}^`].join(' '));
+    const tags = await getTags({
+        filter: `${newTag.split('-')[0]}-*`,
+        orderBy: 'desc',
+    });
 
-    if (!match) {
-        return;
-    }
+    console.log('tags :: ', tags);
 
-    const latestTag = match[1];
-    const latestTagID = match[2];
+    const latestTag = tags[1];
 
     console.log('latestTag :: ', latestTag);
-    console.log('lastTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
 
@@ -49,7 +47,7 @@ const exec = promisify(childProcess.exec);
         octokit.repos.compareCommits.endpoint.merge({
             owner,
             repo,
-            base: latestTagID,
+            base: 'latestTagID',
             head: newTagID,
         })
     );
