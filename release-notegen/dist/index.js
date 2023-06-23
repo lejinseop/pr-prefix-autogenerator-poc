@@ -13924,6 +13924,8 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, e_1, _b, _c;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
+    console.log('owner :: ', owner);
+    console.log('repo :: ', repo);
     // if (!pullRequest) {
     //     console.warn('Pull request does not exists');
     //     return;
