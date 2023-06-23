@@ -13963,7 +13963,8 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
             const response = _c;
             const { data: compareCommits } = response;
             console.log('compareCommits :: ', compareCommits);
-            commitItems.push(...compareCommits.map(compareCommit => compareCommit));
+            // @ts-ignore
+            commitItems.push(...compareCommits.commits);
         }
     }
     catch (e_1_1) { e_1 = { error: e_1_1 }; }

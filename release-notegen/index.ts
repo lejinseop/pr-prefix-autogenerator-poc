@@ -58,8 +58,8 @@ const solution1 = async () => {
     for await (const response of timeline) {
         const { data: compareCommits } = response;
         console.log('compareCommits :: ', compareCommits);
-        commitItems.push(...compareCommits.map(compareCommit => compareCommit));
-        // commitItems.push(...compareCommits.commits)
+        // @ts-ignore
+        commitItems.push(...compareCommits.commits)
     }
     console.log('commitItems ::: ', commitItems);
 
