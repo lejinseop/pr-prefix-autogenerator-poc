@@ -14036,7 +14036,7 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Succed executed');
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    yield solution2();
+    yield solution1();
 }))();
 
 

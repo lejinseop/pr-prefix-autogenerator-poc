@@ -129,5 +129,5 @@ const solution2 = async () => {
 }
 
 (async () => {
-    await solution2()
+    await solution1()
 })();
