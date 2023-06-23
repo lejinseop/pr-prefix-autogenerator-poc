@@ -13963,6 +13963,7 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
             const response = _c;
             const { data: compareCommits } = response;
             console.log('compareCommits :: ', compareCommits);
+            commitItems.push(...compareCommits.map(compareCommit => compareCommit));
         }
     }
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -13972,6 +13973,7 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         finally { if (e_1) throw e_1.error; }
     }
+    console.log('commitItems ::: ', commitItems);
     // await octokit.rest.pulls.update({
     //     owner,
     //     repo,
