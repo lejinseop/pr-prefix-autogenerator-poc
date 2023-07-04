@@ -13205,12 +13205,13 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         auth,
     });
     const labels = ['label1', 'label2', 'label3'];
+    const footer = ['---------------------------\r\n', labels.join(',')];
     yield octokit.rest.pulls.update({
         owner,
         repo,
         pull_number: pullNumber,
         title: `${title} [test-suffix]`,
-        body: `${body}\r\n${labels.join(',')}`,
+        body: `${body}\r\n${footer.join('')}`,
     });
     console.log('Succed executed');
 });
