@@ -64,11 +64,12 @@ const solution1 = async () => {
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
 
     for (const commit of verifiedCommits) {
-        console.log('-------------------------');
+        console.log('============================');
         console.log('sha      :: ', commit.sha);
         console.log('message  :: ', commit.commit.message);
         console.log('verified :: ', commit.commit.verification?.verified);
     }
+    console.log('============================');
 
     // interface Commit {
     //     sha: string;
