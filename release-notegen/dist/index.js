@@ -13967,9 +13967,10 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
     for (const commit of verifiedCommits) {
         console.log('============================');
-        console.log('sha      :: ', commit.sha);
-        console.log('message  :: ', commit.commit.message);
-        console.log('verified :: ', (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified);
+        console.log('sha       :: ', commit.sha);
+        console.log('message   :: ', commit.commit.message);
+        console.log('message[] :: ', commit.commit.message.split('\r\n'));
+        console.log('verified  :: ', (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified);
     }
     console.log('============================');
     // interface Commit {

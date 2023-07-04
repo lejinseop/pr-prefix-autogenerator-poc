@@ -65,9 +65,10 @@ const solution1 = async () => {
 
     for (const commit of verifiedCommits) {
         console.log('============================');
-        console.log('sha      :: ', commit.sha);
-        console.log('message  :: ', commit.commit.message);
-        console.log('verified :: ', commit.commit.verification?.verified);
+        console.log('sha       :: ', commit.sha);
+        console.log('message   :: ', commit.commit.message);
+        console.log('message[] :: ', commit.commit.message.split('\r\n'));
+        console.log('verified  :: ', commit.commit.verification?.verified);
     }
     console.log('============================');
 
