@@ -13179,7 +13179,7 @@ const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
-const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
+const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     if (!pullRequest) {
@@ -13203,85 +13203,16 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
-    const { data: mainBranch } = yield octokit.rest.repos.getBranch({
+    yield octokit.rest.pulls.update({
         owner,
         repo,
-        branch: "main",
+        pull_number: pullNumber,
+        title: `${title} [test-suffix]`,
     });
-    const mainCommitSHA = mainBranch.commit.sha;
-    const { data: mainCommit } = yield octokit.rest.git.getCommit({
-        owner,
-        repo,
-        commit_sha: mainCommitSHA,
-    });
-    const commitMessage = mainCommit.message + "\n\nHELLO WORLD";
-    console.log('mainCommit ::: ', mainCommit);
-    const { data: newTree } = yield octokit.rest.git.createTree({
-        owner,
-        repo,
-        base_tree: mainCommit.tree.sha,
-        tree: mainCommit.tree.tree,
-    });
-    const { data: newCommit } = yield octokit.rest.git.createCommit({
-        owner,
-        repo,
-        message: commitMessage,
-        tree: newTree.sha,
-    });
-    yield octokit.rest.git.updateRef({
-        owner,
-        repo,
-        ref: "heads/main",
-        sha: newCommit.sha,
-        force: true,
-    });
-    // const tags = await getTags({
-    //     filter: `${newTag.split('-')[0]}-*`,
-    //     orderBy: 'desc',
-    // });
-    // console.log('tags :: ', tags);
-    // const latestTag = tags[1];
-    // const latestTagID = await getTagID(latestTag);
-    // console.log('latestTag :: ', latestTag);
-    // console.log('latestTagID :: ', latestTagID);
-    // console.log('newTag :: ', newTag);
-    // console.log('newTagID :: ', newTagID);
-    // const timeline = octokit.paginate.iterator(
-    //     octokit.repos.compareCommits.endpoint.merge({
-    //         owner,
-    //         repo,
-    //         base: latestTagID.substring(0, 7),
-    //         head: newTagID.substring(0, 7),
-    //     })
-    // );
-    // const commitItems = [];
-    // for await (const response of timeline) {
-    //     const { data: compareCommits } = response;
-    //     console.log('compareCommits :: ', compareCommits);
-    // }
-    // await octokit.rest.pulls.update({
-    //     owner,
-    //     repo,
-    //     pull_number: pullNumber,
-    //     title: `${title} [test-suffix]`,
-    // });
-    console.log('Succed executed');
-});
-const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const { owner, repo } = github.context.repo;
-    const pullRequest = github.context.payload.pull_request;
-    // if (!pullRequest) {
-    //     console.warn('Pull request does not exists');
-    //     return;
-    // }
-    // const title = pullRequest.title as string;
-    // const pullNumber = pullRequest.number;
-    console.log('payload :: ', github.context.payload);
-    console.log('context :: ', github.context);
     console.log('Succed executed');
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    yield solution1();
+    yield solution();
 }))();
 
 
