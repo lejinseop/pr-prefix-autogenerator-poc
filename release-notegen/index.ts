@@ -45,14 +45,14 @@ const solution1 = async () => {
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
 
-    const timeline = octokit.paginate.iterator(
-        octokit.repos.compareCommits.endpoint.merge({
-            owner,
-            repo,
-            base: latestTagID.substring(0, 7),
-            head: newTagID.substring(0, 7),
-        })
-    );
+    // const timeline = octokit.paginate.iterator(
+    //     octokit.repos.compareCommits.endpoint.merge({
+    //         owner,
+    //         repo,
+    //         base: latestTagID.substring(0, 7),
+    //         head: newTagID.substring(0, 7),
+    //     })
+    // );
 
     const commits = await octokit.repos.compareCommits({
         owner,
@@ -61,8 +61,13 @@ const solution1 = async () => {
         head: newTagID.substring(0, 7),
     });
 
-    for (const commit of commits.data.commits) {
-        console.log('commit :: ', commit);
+    const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
+
+    for (const commit of verifiedCommits) {
+        console.log('-------------------------');
+        console.log('sha      :: ', commit.sha);
+        console.log('message  :: ', commit.commit.message);
+        console.log('verified :: ', commit.commit.verification?.verified);
     }
 
     // interface Commit {

@@ -13927,6 +13927,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
  * 태그에 해당하는 라벨 포함된 커밋만 추려서 release note 생성
  */
 const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('owner :: ', owner);
@@ -13949,20 +13950,26 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('latestTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
-    const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
-        owner,
-        repo,
-        base: latestTagID.substring(0, 7),
-        head: newTagID.substring(0, 7),
-    }));
+    // const timeline = octokit.paginate.iterator(
+    //     octokit.repos.compareCommits.endpoint.merge({
+    //         owner,
+    //         repo,
+    //         base: latestTagID.substring(0, 7),
+    //         head: newTagID.substring(0, 7),
+    //     })
+    // );
     const commits = yield octokit.repos.compareCommits({
         owner,
         repo,
         base: latestTagID.substring(0, 7),
         head: newTagID.substring(0, 7),
     });
-    for (const commit of commits.data.commits) {
-        console.log('commit :: ', commit);
+    const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
+    for (const commit of verifiedCommits) {
+        console.log('-------------------------');
+        console.log('sha      :: ', commit.sha);
+        console.log('message  :: ', commit.commit.message);
+        console.log('verified :: ', (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified);
     }
     // interface Commit {
     //     sha: string;
@@ -13993,7 +14000,7 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Succed executed');
 });
 const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, e_1, _b, _c;
+    var _b, e_1, _c, _d;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('context :: ', github.context);
@@ -14022,10 +14029,10 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const commitItems = [];
     try {
-        for (var _d = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _a = timeline_1_1.done, !_a; _d = true) {
-            _c = timeline_1_1.value;
-            _d = false;
-            const response = _c;
+        for (var _e = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _b = timeline_1_1.done, !_b; _e = true) {
+            _d = timeline_1_1.value;
+            _e = false;
+            const response = _d;
             const { data: compareCommits } = response;
             console.log('compareCommits :: ', compareCommits);
         }
@@ -14033,7 +14040,7 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
     finally {
         try {
-            if (!_d && !_a && (_b = timeline_1.return)) yield _b.call(timeline_1);
+            if (!_e && !_b && (_c = timeline_1.return)) yield _c.call(timeline_1);
         }
         finally { if (e_1) throw e_1.error; }
     }
