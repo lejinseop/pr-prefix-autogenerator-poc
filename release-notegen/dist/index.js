@@ -13920,19 +13920,82 @@ const child_process_1 = __importDefault(__nccwpck_require__(2081));
 const getTagID_1 = __importDefault(__nccwpck_require__(9111));
 const getTags_1 = __importDefault(__nccwpck_require__(435));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
+/**
+ * tag push되면 실행
+ * 새로 만들어진 태그...바로 직전 태그 사이 커밋 목록 가져오고
+ * 그 커밋들에 연결된 pr의 라벨 가져와서
+ * 태그에 해당하는 라벨 포함된 커밋만 추려서 release note 생성
+ */
 const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, e_1, _b, _c;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('owner :: ', owner);
     console.log('repo :: ', repo);
-    // if (!pullRequest) {
-    //     console.warn('Pull request does not exists');
-    //     return;
+    console.log('context :: ', github.context);
+    const newTag = github.context.ref.replace('refs/tags/', '');
+    const newTagID = github.context.payload.after;
+    const auth = core.getInput('repo-token', { required: true });
+    const octokit = new rest_1.Octokit({
+        auth,
+    });
+    const tags = yield (0, getTags_1.default)({
+        filter: `${newTag.split('-')[0]}-*`,
+        orderBy: 'desc',
+    });
+    console.log('tags :: ', tags);
+    const latestTag = tags[1];
+    const latestTagID = yield (0, getTagID_1.default)(latestTag);
+    console.log('latestTag :: ', latestTag);
+    console.log('latestTagID :: ', latestTagID);
+    console.log('newTag :: ', newTag);
+    console.log('newTagID :: ', newTagID);
+    const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
+        owner,
+        repo,
+        base: latestTagID.substring(0, 7),
+        head: newTagID.substring(0, 7),
+    }));
+    const commits = yield octokit.repos.compareCommits({
+        owner,
+        repo,
+        base: latestTagID.substring(0, 7),
+        head: newTagID.substring(0, 7),
+    });
+    for (const commit of commits.data.commits) {
+        console.log('commit :: ', commit);
+    }
+    // interface Commit {
+    //     sha: string;
+    //     node_id: string;
+    //     commit: {
+    //         author: object;
+    //         message: string;
+    //         verification: object;
+    //     }
+    //     author: {
+    //         login: string;
+    //     }
     // }
-    // const title = pullRequest.title as string;
-    // const pullNumber = pullRequest.number;
-    // console.log('payload :: ', github.context.payload);
+    // const commitItems = [];
+    // for await (const response of timeline) {
+    //     const { data: compareCommits } = response;
+    //     console.log('compareCommits :: ', compareCommits);
+    //     // @ts-ignore
+    //     commitItems.push(...compareCommits.commits)
+    // }
+    // console.log('commitItems ::: ', commitItems);
+    // await octokit.rest.pulls.update({
+    //     owner,
+    //     repo,
+    //     pull_number: pullNumber,
+    //     title: `${title} [test-suffix]`,
+    // });
+    console.log('Succed executed');
+});
+const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, e_1, _b, _c;
+    const { owner, repo } = github.context.repo;
+    const pullRequest = github.context.payload.pull_request;
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
     const newTagID = github.context.payload.after;
@@ -13965,8 +14028,6 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
             const response = _c;
             const { data: compareCommits } = response;
             console.log('compareCommits :: ', compareCommits);
-            // @ts-ignore
-            commitItems.push(...compareCommits.commits);
         }
     }
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -13975,60 +14036,6 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
             if (!_d && !_a && (_b = timeline_1.return)) yield _b.call(timeline_1);
         }
         finally { if (e_1) throw e_1.error; }
-    }
-    console.log('commitItems ::: ', commitItems);
-    // await octokit.rest.pulls.update({
-    //     owner,
-    //     repo,
-    //     pull_number: pullNumber,
-    //     title: `${title} [test-suffix]`,
-    // });
-    console.log('Succed executed');
-});
-const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, e_2, _f, _g;
-    const { owner, repo } = github.context.repo;
-    const pullRequest = github.context.payload.pull_request;
-    console.log('context :: ', github.context);
-    const newTag = github.context.ref.replace('refs/tags/', '');
-    const newTagID = github.context.payload.after;
-    const auth = core.getInput('repo-token', { required: true });
-    const octokit = new rest_1.Octokit({
-        auth,
-    });
-    const tags = yield (0, getTags_1.default)({
-        filter: `${newTag.split('-')[0]}-*`,
-        orderBy: 'desc',
-    });
-    console.log('tags :: ', tags);
-    const latestTag = tags[1];
-    const latestTagID = yield (0, getTagID_1.default)(latestTag);
-    console.log('latestTag :: ', latestTag);
-    console.log('latestTagID :: ', latestTagID);
-    console.log('newTag :: ', newTag);
-    console.log('newTagID :: ', newTagID);
-    const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
-        owner,
-        repo,
-        base: latestTagID.substring(0, 7),
-        head: newTagID.substring(0, 7),
-    }));
-    const commitItems = [];
-    try {
-        for (var _h = true, timeline_2 = __asyncValues(timeline), timeline_2_1; timeline_2_1 = yield timeline_2.next(), _e = timeline_2_1.done, !_e; _h = true) {
-            _g = timeline_2_1.value;
-            _h = false;
-            const response = _g;
-            const { data: compareCommits } = response;
-            console.log('compareCommits :: ', compareCommits);
-        }
-    }
-    catch (e_2_1) { e_2 = { error: e_2_1 }; }
-    finally {
-        try {
-            if (!_h && !_e && (_f = timeline_2.return)) yield _f.call(timeline_2);
-        }
-        finally { if (e_2) throw e_2.error; }
     }
     // await octokit.rest.pulls.update({
     //     owner,
