@@ -3,8 +3,6 @@ import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
 import { promisify } from 'util';
 import childProcess from 'child_process';
-import getTagID from './getTagID';
-import getTags from './getTags';
 
 const exec = promisify(childProcess.exec);
 
@@ -29,9 +27,6 @@ const solution = async () => {
     console.log('pr label :: ', pullLabel);
     console.log('mergeCommitID :: ', mergeCommitID);
     console.log('=======================================');
-
-    // const newTag = github.context.ref.replace('refs/tags/', '');
-    // const newTagID: string = github.context.payload.after;
 
     const auth = core.getInput('repo-token', { required: true });
 

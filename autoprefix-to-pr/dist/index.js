@@ -13197,8 +13197,6 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('pr label :: ', pullLabel);
     console.log('mergeCommitID :: ', mergeCommitID);
     console.log('=======================================');
-    // const newTag = github.context.ref.replace('refs/tags/', '');
-    // const newTagID: string = github.context.payload.after;
     const auth = core.getInput('repo-token', { required: true });
     const octokit = new rest_1.Octokit({
         auth,
