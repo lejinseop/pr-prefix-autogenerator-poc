@@ -13187,6 +13187,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     const title = pullRequest.title;
+    const body = pullRequest.body || '';
     const pullNumber = pullRequest.number;
     const pullLabel = pullRequest.labels.map((label) => label.name);
     const mergeCommitID = pullRequest.merge_commit_sha;
@@ -13203,11 +13204,13 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
+    const labels = ['label1', 'label2', 'label3'];
     yield octokit.rest.pulls.update({
         owner,
         repo,
         pull_number: pullNumber,
         title: `${title} [test-suffix]`,
+        body: `${body}\r\n${labels.join(',')}`,
     });
     console.log('Succed executed');
 });

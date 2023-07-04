@@ -18,6 +18,7 @@ const solution = async () => {
     }
 
     const title = pullRequest.title as string;
+    const body = pullRequest.body || '';
     const pullNumber = pullRequest.number;
     const pullLabel: string[] = pullRequest.labels.map((label: any) => label.name);
     const mergeCommitID = pullRequest.merge_commit_sha;
@@ -39,11 +40,14 @@ const solution = async () => {
         auth,
     });
 
+    const labels = ['label1', 'label2', 'label3'];
+
     await octokit.rest.pulls.update({
         owner,
         repo,
         pull_number: pullNumber,
         title: `${title} [test-suffix]`,
+        body: `${body}\r\n${labels.join(',')}`,
     });
 
     console.log('Succed executed');
