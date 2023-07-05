@@ -74,6 +74,15 @@ const solution1 = async () => {
     });
     console.log('verifiedCommits ::: ', verifiedCommits);
     console.log('commitsByWorkspace ::: ', commitsByWorkspace);
+
+    const authors = Array.from(new Set(commitsByWorkspace.map(commit => {
+        return getAuthor(commit);
+    })))
+
+    const changes = commitsByWorkspace.map(commit => {
+        const shortMessage = commit.commit.message.split('\n')[0];
+        return `${shortMessage} @${getAuthor(commit)}`;
+    });
     
     // verifiedCommits.reduce()
     // for (const commit of verifiedCommits) {
@@ -121,15 +130,17 @@ const solution1 = async () => {
     //     title: `${title} [test-suffix]`,
     // });
 
-    const changes = [''];
-
     const changelog = `
-        {n}명의 ✨빛나는✨ 기여자들 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
+        ${authors.length}명의 ✨빛나는✨ 기여자들 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
 
         ${changes.join('\n')}
 
-        이 릴리즈의 모든 고마운 사람들: ... 야 고마워!!
+        이 릴리즈의 모든 고마운 사람들: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!
     `
+
+    console.log('++++++++++++++++++++++++++++++');
+    console.log(changelog)
+    console.log('++++++++++++++++++++++++++++++');
 
     console.log('Succed executed');
 }
