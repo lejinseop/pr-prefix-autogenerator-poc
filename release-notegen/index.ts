@@ -87,6 +87,7 @@ const solution1 = async () => {
     const changelog = [
         `${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
         ...changes,// .join('\n'),
+        ``,
         `고마운 사람${authors.length > 1 ? '들' : ''}: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!`
     ];
 
