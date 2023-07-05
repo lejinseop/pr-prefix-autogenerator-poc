@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@octokit/openapi-types": "^18.0.0",
     "@types/node": "^20.2.6",
     "@vercel/ncc": "^0.36.1",
     "typescript": "^5.1.3"

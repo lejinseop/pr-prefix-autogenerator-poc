@@ -13927,7 +13927,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
  * 태그에 해당하는 라벨 포함된 커밋만 추려서 release note 생성
  */
 const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('owner :: ', owner);
@@ -13950,14 +13950,14 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('latestTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
     console.log('newTagID :: ', newTagID);
-    // const timeline = octokit.paginate.iterator(
-    //     octokit.repos.compareCommits.endpoint.merge({
-    //         owner,
-    //         repo,
-    //         base: latestTagID.substring(0, 7),
-    //         head: newTagID.substring(0, 7),
-    //     })
-    // );
+    const getAuthor = (commit) => {
+        var _a;
+        if (!commit.author) {
+            console.warn(`The author of the commit: ${commit.commit.tree.url} cannot be retrieved. Please add the github username manually.`);
+            return "TODO INSERT AUTHOR'S USERNAME";
+        }
+        return (_a = commit.author) === null || _a === void 0 ? void 0 : _a.login;
+    };
     const commits = yield octokit.repos.compareCommits({
         owner,
         repo,
@@ -13968,9 +13968,10 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     for (const commit of verifiedCommits) {
         console.log('============================');
         console.log('sha       :: ', commit.sha);
+        console.log('author    :: ', (_a = commit.author) === null || _a === void 0 ? void 0 : _a.login);
         console.log('message   :: ', commit.commit.message);
         console.log('message[] :: ', commit.commit.message.split('\r\n'));
-        console.log('verified  :: ', (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified);
+        console.log('verified  :: ', (_b = commit.commit.verification) === null || _b === void 0 ? void 0 : _b.verified);
     }
     console.log('============================');
     // interface Commit {
@@ -13999,10 +14000,18 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     //     pull_number: pullNumber,
     //     title: `${title} [test-suffix]`,
     // });
+    const changes = [''];
+    const changelog = `
+        {n}명의 ✨빛나는✨ 기여자들 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
+
+        ${changes.join('\n')}
+
+        이 릴리즈의 모든 고마운 사람들: ... 야 고마워!!
+    `;
     console.log('Succed executed');
 });
 const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, e_1, _c, _d;
+    var _c, e_1, _d, _e;
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('context :: ', github.context);
@@ -14031,10 +14040,10 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const commitItems = [];
     try {
-        for (var _e = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _b = timeline_1_1.done, !_b; _e = true) {
-            _d = timeline_1_1.value;
-            _e = false;
-            const response = _d;
+        for (var _f = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _c = timeline_1_1.done, !_c; _f = true) {
+            _e = timeline_1_1.value;
+            _f = false;
+            const response = _e;
             const { data: compareCommits } = response;
             console.log('compareCommits :: ', compareCommits);
         }
@@ -14042,7 +14051,7 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
     finally {
         try {
-            if (!_e && !_b && (_c = timeline_1.return)) yield _c.call(timeline_1);
+            if (!_f && !_c && (_d = timeline_1.return)) yield _d.call(timeline_1);
         }
         finally { if (e_1) throw e_1.error; }
     }
@@ -14057,6 +14066,14 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield solution1();
 }))();
+// const timeline = octokit.paginate.iterator(
+//     octokit.repos.compareCommits.endpoint.merge({
+//         owner,
+//         repo,
+//         base: latestTagID.substring(0, 7),
+//         head: newTagID.substring(0, 7),
+//     })
+// );
 
 
 /***/ }),
