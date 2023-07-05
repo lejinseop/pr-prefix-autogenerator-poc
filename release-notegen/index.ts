@@ -66,17 +66,19 @@ const solution1 = async () => {
     });
 
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
+    console.log('verifiedCommits :: ', verifiedCommits);
     
-    for (const commit of verifiedCommits) {
-        console.log('============================');
-        console.log('sha       :: ', commit.sha);
-        console.log('author    :: ', commit.author?.login);
-        console.log('message   :: ', commit.commit.message);
-        console.log('title     :: ', commit.commit.message.split('\n')[0]);
-        console.log('message[] :: ', commit.commit.message.split('\n'));
-        console.log('verified  :: ', commit.commit.verification?.verified);
-    }
-    console.log('============================');
+    // verifiedCommits.reduce()
+    // for (const commit of verifiedCommits) {
+    //     console.log('============================');
+    //     console.log('sha       :: ', commit.sha);
+    //     console.log('author    :: ', commit.author?.login);
+    //     console.log('message   :: ', commit.commit.message);
+    //     console.log('title     :: ', commit.commit.message.split('\n')[0]);
+    //     console.log('message[] :: ', commit.commit.message.split('\n'));
+    //     console.log('verified  :: ', commit.commit.verification?.verified);
+    // }
+    // console.log('============================');
 
 
     
