@@ -13977,24 +13977,22 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     })));
     const changes = commitsByWorkspace.map(commit => {
         const shortMessage = commit.commit.message.split('\n')[0];
-        return `${shortMessage} @${getAuthor(commit)}`;
+        return `- ${shortMessage} @${getAuthor(commit)}`;
     });
-    const changelog = `
-        ${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
-
-        ${changes.join('\n')}
-
-        고마운 사람${authors.length > 1 ? '들' : ''}: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!
-    `;
+    const changelog = [
+        `${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
+        ...changes,
+        `고마운 사람${authors.length > 1 ? '들' : ''}: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!`
+    ];
     console.log('++++++++++++++++++++++++++++++');
-    console.log(changelog);
+    console.log(changelog.join('\n'));
     console.log('++++++++++++++++++++++++++++++');
     yield octokit.rest.repos.createRelease({
         owner,
         repo,
         tag_name: newTag,
         name: newTag,
-        body: changelog,
+        body: changelog.join('\n'),
     });
     console.log('Succed executed');
 });
