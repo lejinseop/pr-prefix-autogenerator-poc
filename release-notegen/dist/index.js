@@ -13970,8 +13970,8 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log('sha       :: ', commit.sha);
         console.log('author    :: ', (_a = commit.author) === null || _a === void 0 ? void 0 : _a.login);
         console.log('message   :: ', commit.commit.message);
-        console.log('title     :: ', commit.commit.message.split('\r\n')[0]);
-        console.log('message[] :: ', commit.commit.message.split('\r\n'));
+        console.log('title     :: ', commit.commit.message.split('\n')[0]);
+        console.log('message[] :: ', commit.commit.message.split('\n'));
         console.log('verified  :: ', (_b = commit.commit.verification) === null || _b === void 0 ? void 0 : _b.verified);
     }
     console.log('============================');
