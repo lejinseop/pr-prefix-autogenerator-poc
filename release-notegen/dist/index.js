@@ -13933,6 +13933,7 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('repo :: ', repo);
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
+    const workspaceName = 'label2';
     const newTagID = github.context.payload.after;
     const auth = core.getInput('repo-token', { required: true });
     const octokit = new rest_1.Octokit({
@@ -13964,7 +13965,13 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
         head: newTagID.substring(0, 7),
     });
     const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
-    console.log('verifiedCommits :: ', verifiedCommits);
+    const commitsByWorkspace = verifiedCommits.filter(commit => {
+        const messageArray = commit.commit.message.split('\n');
+        const labels = (messageArray.pop() || '').split(',');
+        return labels.includes(workspaceName);
+    });
+    console.log('verifiedCommits ::: ', verifiedCommits);
+    console.log('commitsByWorkspace ::: ', commitsByWorkspace);
     // verifiedCommits.reduce()
     // for (const commit of verifiedCommits) {
     //     console.log('============================');

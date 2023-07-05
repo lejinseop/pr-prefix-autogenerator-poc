@@ -24,6 +24,7 @@ const solution1 = async () => {
 
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
+    const workspaceName = 'label2'
     const newTagID: string = github.context.payload.after;
 
     const auth = core.getInput('repo-token', { required: true });
@@ -66,7 +67,13 @@ const solution1 = async () => {
     });
 
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
-    console.log('verifiedCommits :: ', verifiedCommits);
+    const commitsByWorkspace = verifiedCommits.filter(commit => {
+        const messageArray = commit.commit.message.split('\n');
+        const labels = (messageArray.pop() || '').split(',');
+        return labels.includes(workspaceName);
+    });
+    console.log('verifiedCommits ::: ', verifiedCommits);
+    console.log('commitsByWorkspace ::: ', commitsByWorkspace);
     
     // verifiedCommits.reduce()
     // for (const commit of verifiedCommits) {
