@@ -13979,53 +13979,23 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
         const shortMessage = commit.commit.message.split('\n')[0];
         return `${shortMessage} @${getAuthor(commit)}`;
     });
-    // verifiedCommits.reduce()
-    // for (const commit of verifiedCommits) {
-    //     console.log('============================');
-    //     console.log('sha       :: ', commit.sha);
-    //     console.log('author    :: ', commit.author?.login);
-    //     console.log('message   :: ', commit.commit.message);
-    //     console.log('title     :: ', commit.commit.message.split('\n')[0]);
-    //     console.log('message[] :: ', commit.commit.message.split('\n'));
-    //     console.log('verified  :: ', commit.commit.verification?.verified);
-    // }
-    // console.log('============================');
-    // interface Commit {
-    //     sha: string;
-    //     node_id: string;
-    //     commit: {
-    //         author: object;
-    //         message: string;
-    //         verification: object;
-    //     }
-    //     author: {
-    //         login: string;
-    //     }
-    // }
-    // const commitItems = [];
-    // for await (const response of timeline) {
-    //     const { data: compareCommits } = response;
-    //     console.log('compareCommits :: ', compareCommits);
-    //     // @ts-ignore
-    //     commitItems.push(...compareCommits.commits)
-    // }
-    // console.log('commitItems ::: ', commitItems);
-    // await octokit.rest.pulls.update({
-    //     owner,
-    //     repo,
-    //     pull_number: pullNumber,
-    //     title: `${title} [test-suffix]`,
-    // });
     const changelog = `
-        ${authors.length}명의 ✨빛나는✨ 기여자들 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
+        ${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!
 
         ${changes.join('\n')}
 
-        이 릴리즈의 모든 고마운 사람들: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!
+        고마운 사람${authors.length > 1 ? '들' : ''}: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!
     `;
     console.log('++++++++++++++++++++++++++++++');
     console.log(changelog);
     console.log('++++++++++++++++++++++++++++++');
+    yield octokit.rest.repos.createRelease({
+        owner,
+        repo,
+        tag_name: newTag,
+        name: newTag,
+        body: changelog,
+    });
     console.log('Succed executed');
 });
 const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -14092,6 +14062,43 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
 //         head: newTagID.substring(0, 7),
 //     })
 // );
+// verifiedCommits.reduce()
+// for (const commit of verifiedCommits) {
+//     console.log('============================');
+//     console.log('sha       :: ', commit.sha);
+//     console.log('author    :: ', commit.author?.login);
+//     console.log('message   :: ', commit.commit.message);
+//     console.log('title     :: ', commit.commit.message.split('\n')[0]);
+//     console.log('message[] :: ', commit.commit.message.split('\n'));
+//     console.log('verified  :: ', commit.commit.verification?.verified);
+// }
+// console.log('============================');
+// interface Commit {
+//     sha: string;
+//     node_id: string;
+//     commit: {
+//         author: object;
+//         message: string;
+//         verification: object;
+//     }
+//     author: {
+//         login: string;
+//     }
+// }
+// const commitItems = [];
+// for await (const response of timeline) {
+//     const { data: compareCommits } = response;
+//     console.log('compareCommits :: ', compareCommits);
+//     // @ts-ignore
+//     commitItems.push(...compareCommits.commits)
+// }
+// console.log('commitItems ::: ', commitItems);
+// await octokit.rest.pulls.update({
+//     owner,
+//     repo,
+//     pull_number: pullNumber,
+//     title: `${title} [test-suffix]`,
+// });
 
 
 /***/ }),
