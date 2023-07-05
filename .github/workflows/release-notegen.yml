@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     name: releaseNoteGen
     permissions:
-      pull-requests: write
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
