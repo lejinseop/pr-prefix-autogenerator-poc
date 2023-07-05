@@ -35,6 +35,12 @@ const solution = async () => {
         auth,
     });
 
+    await octokit.rest.issues.lock({
+        owner,
+        repo,
+        issue_number: pullNumber,
+    });
+
     const labels = ['label1', 'label2', 'label3'];
 
     const footer = ['---------------------------\r\n',labels.join(',')]

@@ -13202,6 +13202,11 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
+    yield octokit.rest.issues.lock({
+        owner,
+        repo,
+        issue_number: pullNumber,
+    });
     const labels = ['label1', 'label2', 'label3'];
     const footer = ['---------------------------\r\n', labels.join(',')];
     yield octokit.rest.pulls.update({
