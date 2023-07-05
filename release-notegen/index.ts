@@ -70,12 +70,16 @@ const solution1 = async () => {
     for (const commit of verifiedCommits) {
         console.log('============================');
         console.log('sha       :: ', commit.sha);
-        console.log('author    :: ', commit.author?.login)
+        console.log('author    :: ', commit.author?.login);
         console.log('message   :: ', commit.commit.message);
+        console.log('title     :: ', commit.commit.message.split('\r\n')[0]);
         console.log('message[] :: ', commit.commit.message.split('\r\n'));
         console.log('verified  :: ', commit.commit.verification?.verified);
     }
     console.log('============================');
+
+
+    
 
     // interface Commit {
     //     sha: string;
