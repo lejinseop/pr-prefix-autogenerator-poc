@@ -49,7 +49,6 @@ const solution = async () => {
         auth,
     });
 
-    const labels = ['label1', 'label2', 'label3'];
     const updatedFiles = await getUpdatedFiles({
         // @ts-ignore
         to: github.context.payload.pull_request.head.sha,
@@ -57,6 +56,7 @@ const solution = async () => {
         from: github.context.payload.pull_request.base.sha,
     });
     console.log('updatedFiles :: ', updatedFiles);
+    const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
     const footer = ['---------------------------\r\n',labels.join(',')]
 
