@@ -13206,12 +13206,12 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
-    const updatedFiles = yield getUpdatedFiles({
+    const updatedFiles = (yield getUpdatedFiles({
         // @ts-ignore
         to: github.context.payload.pull_request.head.sha,
         // @ts-ignore
         from: github.context.payload.pull_request.base.sha,
-    });
+    })).filter(Boolean);
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
     const footer = ['---------------------------\r\n', labels.join(',')];

@@ -49,12 +49,12 @@ const solution = async () => {
         auth,
     });
 
-    const updatedFiles = await getUpdatedFiles({
+    const updatedFiles = (await getUpdatedFiles({
         // @ts-ignore
         to: github.context.payload.pull_request.head.sha,
         // @ts-ignore
         from: github.context.payload.pull_request.base.sha,
-    });
+    })).filter(Boolean);
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
