@@ -68,7 +68,7 @@ const solution = async () => {
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
-        const labels = (messageArray[1] || '').split(',');
+        const labels = (messageArray[3] || '').replace('\r\n', '').split(',');
         return labels.includes(workspaceName);
     });
     console.log('verifiedCommits ::: ', verifiedCommits);
