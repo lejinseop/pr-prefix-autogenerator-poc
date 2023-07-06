@@ -58,7 +58,7 @@ const solution = async () => {
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
-    const footer = [labels.join(','), '---------------------------\r\n']
+    const footer = [labels.join(','), '\r\n---------------------------']
 
     await octokit.rest.pulls.update({
         owner,

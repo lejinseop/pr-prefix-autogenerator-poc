@@ -13214,7 +13214,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     })).filter(Boolean);
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
-    const footer = [labels.join(','), '---------------------------\r\n'];
+    const footer = [labels.join(','), '\r\n---------------------------'];
     yield octokit.rest.pulls.update({
         owner,
         repo,
