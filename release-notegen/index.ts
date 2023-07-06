@@ -23,9 +23,9 @@ const solution = async () => {
 
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
-    const workspaceName = 'label2'
+    const workspaceName = newTag.split('/')[0];
     const newTagID: string = github.context.payload.after;
-
+    console.log('workspaceName ::: ', workspaceName);
     const auth = core.getInput('repo-token', { required: true });
 
     const octokit = new Octokit({

@@ -13206,7 +13206,6 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
-    const labels = ['label1', 'label2', 'label3'];
     const updatedFiles = yield getUpdatedFiles({
         // @ts-ignore
         to: github.context.payload.pull_request.head.sha,
@@ -13214,6 +13213,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         from: github.context.payload.pull_request.base.sha,
     });
     console.log('updatedFiles :: ', updatedFiles);
+    const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
     const footer = ['---------------------------\r\n', labels.join(',')];
     yield octokit.rest.pulls.update({
         owner,
