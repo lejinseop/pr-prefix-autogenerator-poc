@@ -13214,13 +13214,13 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     })).filter(Boolean);
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
-    const footer = [labels.join(','), '\r\n---------------------------'];
+    const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
     yield octokit.rest.pulls.update({
         owner,
         repo,
         pull_number: pullNumber,
         title: `${title} [test-suffix]`,
-        body: `${footer.join('')}\r\n${body}`,
+        body: `${header.join('')}\r\n${body}`,
     });
     console.log('Succed executed');
 });
