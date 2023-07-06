@@ -6,6 +6,20 @@ import childProcess from 'child_process';
 
 const exec = promisify(childProcess.exec);
 
+const getUpdatedFiles = async ({
+    from,
+    to,
+}: {
+    from: string;
+    to: string;
+}): Promise<string[]> => {
+    const { stdout } = await exec(
+        ['git', '-c', 'core.quotepath=false', 'diff', '--name-only', `${from}...${to}`].join(' '),
+    );
+
+    return stdout.split('\n');
+};
+
 const solution = async () => {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
@@ -35,13 +49,10 @@ const solution = async () => {
         auth,
     });
 
-    await octokit.rest.issues.lock({
-        owner,
-        repo,
-        issue_number: pullNumber,
-    });
-
     const labels = ['label1', 'label2', 'label3'];
+    // const changes = await getUpdatedFiles({
+    //     to: github.context.payload.pull_request.
+    // })
 
     const footer = ['---------------------------\r\n',labels.join(',')]
 
