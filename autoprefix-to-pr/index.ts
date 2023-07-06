@@ -50,9 +50,13 @@ const solution = async () => {
     });
 
     const labels = ['label1', 'label2', 'label3'];
-    // const changes = await getUpdatedFiles({
-    //     to: github.context.payload.pull_request.
-    // })
+    const updatedFiles = await getUpdatedFiles({
+        // @ts-ignore
+        to: github.context.payload.pull_request.head.sha,
+        // @ts-ignore
+        from: github.context.payload.pull_request.base.sha,
+    });
+    console.log('updatedFiles :: ', updatedFiles);
 
     const footer = ['---------------------------\r\n',labels.join(',')]
 

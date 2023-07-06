@@ -13901,13 +13901,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -13926,7 +13919,7 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
  * 그 커밋들에 연결된 pr의 라벨 가져와서
  * 태그에 해당하는 라벨 포함된 커밋만 추려서 release note 생성
  */
-const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
+const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
     console.log('owner :: ', owner);
@@ -13997,61 +13990,8 @@ const solution1 = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     console.log('Succed executed');
 });
-const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, e_1, _b, _c;
-    const { owner, repo } = github.context.repo;
-    const pullRequest = github.context.payload.pull_request;
-    console.log('context :: ', github.context);
-    const newTag = github.context.ref.replace('refs/tags/', '');
-    const newTagID = github.context.payload.after;
-    const auth = core.getInput('repo-token', { required: true });
-    const octokit = new rest_1.Octokit({
-        auth,
-    });
-    const tags = yield (0, getTags_1.default)({
-        filter: `${newTag.split('-')[0]}-*`,
-        orderBy: 'desc',
-    });
-    console.log('tags :: ', tags);
-    const latestTag = tags[1];
-    const latestTagID = yield (0, getTagID_1.default)(latestTag);
-    console.log('latestTag :: ', latestTag);
-    console.log('latestTagID :: ', latestTagID);
-    console.log('newTag :: ', newTag);
-    console.log('newTagID :: ', newTagID);
-    const timeline = octokit.paginate.iterator(octokit.repos.compareCommits.endpoint.merge({
-        owner,
-        repo,
-        base: latestTagID.substring(0, 7),
-        head: newTagID.substring(0, 7),
-    }));
-    const commitItems = [];
-    try {
-        for (var _d = true, timeline_1 = __asyncValues(timeline), timeline_1_1; timeline_1_1 = yield timeline_1.next(), _a = timeline_1_1.done, !_a; _d = true) {
-            _c = timeline_1_1.value;
-            _d = false;
-            const response = _c;
-            const { data: compareCommits } = response;
-            console.log('compareCommits :: ', compareCommits);
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
-        try {
-            if (!_d && !_a && (_b = timeline_1.return)) yield _b.call(timeline_1);
-        }
-        finally { if (e_1) throw e_1.error; }
-    }
-    // await octokit.rest.pulls.update({
-    //     owner,
-    //     repo,
-    //     pull_number: pullNumber,
-    //     title: `${title} [test-suffix]`,
-    // });
-    console.log('Succed executed');
-});
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    yield solution1();
+    yield solution();
 }))();
 // const timeline = octokit.paginate.iterator(
 //     octokit.repos.compareCommits.endpoint.merge({
@@ -14098,6 +14038,49 @@ const solution2 = () => __awaiter(void 0, void 0, void 0, function* () {
 //     pull_number: pullNumber,
 //     title: `${title} [test-suffix]`,
 // });
+// const solution2 = async () => {
+//     const { owner, repo } = github.context.repo;
+//     const pullRequest = github.context.payload.pull_request;
+//     console.log('context :: ', github.context);
+//     const newTag = github.context.ref.replace('refs/tags/', '');
+//     const newTagID: string = github.context.payload.after;
+//     const auth = core.getInput('repo-token', { required: true });
+//     const octokit = new Octokit({
+//         auth,
+//     });
+//     const tags = await getTags({
+//         filter: `${newTag.split('-')[0]}-*`,
+//         orderBy: 'desc',
+//     });
+//     console.log('tags :: ', tags);
+//     const latestTag = tags[1];
+//     const latestTagID = await getTagID(latestTag);
+//     console.log('latestTag :: ', latestTag);
+//     console.log('latestTagID :: ', latestTagID);
+//     console.log('newTag :: ', newTag);
+//     console.log('newTagID :: ', newTagID);
+//     const timeline = octokit.paginate.iterator(
+//         octokit.repos.compareCommits.endpoint.merge({
+//             owner,
+//             repo,
+//             base: latestTagID.substring(0, 7),
+//             head: newTagID.substring(0, 7),
+//         })
+//     );
+//     const commitItems = [];
+//     for await (const response of timeline) {
+//         const { data: compareCommits } = response;
+//         console.log('compareCommits :: ', compareCommits);
+//         // commitItems.push(...compareCommits.commits)
+//     }
+//     // await octokit.rest.pulls.update({
+//     //     owner,
+//     //     repo,
+//     //     pull_number: pullNumber,
+//     //     title: `${title} [test-suffix]`,
+//     // });
+//     console.log('Succed executed');
+// }
 
 
 /***/ }),
