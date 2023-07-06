@@ -69,7 +69,7 @@ const solution = async () => {
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
         console.log('messageArray :::: ', messageArray);
-        const labels = (messageArray[3] || '').replace('\r\n', '').split(',');
+        const labels = (messageArray[3] || '').replace('\r', '').replace('\n', '').split(',');
         console.log('labels :::: ', labels);
         return labels.includes(workspaceName);
     });
