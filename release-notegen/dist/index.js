@@ -13926,8 +13926,9 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('repo :: ', repo);
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
-    const workspaceName = 'label2';
+    const workspaceName = newTag.split('/')[0];
     const newTagID = github.context.payload.after;
+    console.log('workspaceName ::: ', workspaceName);
     const auth = core.getInput('repo-token', { required: true });
     const octokit = new rest_1.Octokit({
         auth,
