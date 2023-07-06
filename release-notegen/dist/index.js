@@ -13961,7 +13961,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
-        const labels = (messageArray.pop() || '').split(',');
+        const labels = (messageArray[0] || '').split(',');
         return labels.includes(workspaceName);
     });
     console.log('verifiedCommits ::: ', verifiedCommits);
