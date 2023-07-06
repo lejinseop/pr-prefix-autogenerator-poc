@@ -13179,6 +13179,10 @@ const rest_1 = __nccwpck_require__(5375);
 const util_1 = __nccwpck_require__(3837);
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
 const exec = (0, util_1.promisify)(child_process_1.default.exec);
+const getUpdatedFiles = ({ from, to, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const { stdout } = yield exec(['git', '-c', 'core.quotepath=false', 'diff', '--name-only', `${from}...${to}`].join(' '));
+    return stdout.split('\n');
+});
 const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github.context.repo;
     const pullRequest = github.context.payload.pull_request;
@@ -13202,12 +13206,14 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = new rest_1.Octokit({
         auth,
     });
-    yield octokit.rest.issues.lock({
-        owner,
-        repo,
-        issue_number: pullNumber,
-    });
     const labels = ['label1', 'label2', 'label3'];
+    const updatedFiles = yield getUpdatedFiles({
+        // @ts-ignore
+        to: github.context.payload.pull_request.head.sha,
+        // @ts-ignore
+        from: github.context.payload.pull_request.base.sha,
+    });
+    console.log('updatedFiles :: ', updatedFiles);
     const footer = ['---------------------------\r\n', labels.join(',')];
     yield octokit.rest.pulls.update({
         owner,
