@@ -13217,8 +13217,8 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     // const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
     const header = [
         '----------\n',
-        '### 변경된 프로젝트\n\n',
         '_이 영역을 변경하지 마세요. 릴리즈 노트 생성을 위한 영역입니다._\n\n',
+        '### 변경된 프로젝트\n\n',
         `labels: ${labels.join(',')}`,
         '\n\n----------'
     ];
