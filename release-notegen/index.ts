@@ -68,9 +68,9 @@ const solution = async () => {
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
-        console.log('messageArray :::: ', messageArray);
-        const labels = (messageArray[3] || '').replace('\r', '').replace('\n', '').split(',');
-        console.log('labels :::: ', labels);
+        const labelsRow = messageArray.find(message => message.startsWith('labels: ')) || '';
+        // const labels = (messageArray[3] || '').replace('\r', '').replace('\n', '').split(',');
+        const labels = labelsRow.replace('\r', '').replace('\n', '').replace('labels: ', '').split(',');
         return labels.includes(workspaceName);
     });
     console.log('verifiedCommits ::: ', verifiedCommits);
