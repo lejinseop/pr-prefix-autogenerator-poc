@@ -13961,8 +13961,10 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
+        console.log('messageArray ::: ', messageArray);
         const labelsRow = messageArray.find(message => message.startsWith('labels: ')) || '';
         // const labels = (messageArray[3] || '').replace('\r', '').replace('\n', '').split(',');
+        console.log('labelsRow ::: ', labelsRow);
         const labels = labelsRow.replace('\r', '').replace('\n', '').replace('labels: ', '').split(',');
         return labels.includes(workspaceName);
     });
@@ -13996,94 +13998,6 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield solution();
 }))();
-// const timeline = octokit.paginate.iterator(
-//     octokit.repos.compareCommits.endpoint.merge({
-//         owner,
-//         repo,
-//         base: latestTagID.substring(0, 7),
-//         head: newTagID.substring(0, 7),
-//     })
-// );
-// verifiedCommits.reduce()
-// for (const commit of verifiedCommits) {
-//     console.log('============================');
-//     console.log('sha       :: ', commit.sha);
-//     console.log('author    :: ', commit.author?.login);
-//     console.log('message   :: ', commit.commit.message);
-//     console.log('title     :: ', commit.commit.message.split('\n')[0]);
-//     console.log('message[] :: ', commit.commit.message.split('\n'));
-//     console.log('verified  :: ', commit.commit.verification?.verified);
-// }
-// console.log('============================');
-// interface Commit {
-//     sha: string;
-//     node_id: string;
-//     commit: {
-//         author: object;
-//         message: string;
-//         verification: object;
-//     }
-//     author: {
-//         login: string;
-//     }
-// }
-// const commitItems = [];
-// for await (const response of timeline) {
-//     const { data: compareCommits } = response;
-//     console.log('compareCommits :: ', compareCommits);
-//     // @ts-ignore
-//     commitItems.push(...compareCommits.commits)
-// }
-// console.log('commitItems ::: ', commitItems);
-// await octokit.rest.pulls.update({
-//     owner,
-//     repo,
-//     pull_number: pullNumber,
-//     title: `${title} [test-suffix]`,
-// });
-// const solution2 = async () => {
-//     const { owner, repo } = github.context.repo;
-//     const pullRequest = github.context.payload.pull_request;
-//     console.log('context :: ', github.context);
-//     const newTag = github.context.ref.replace('refs/tags/', '');
-//     const newTagID: string = github.context.payload.after;
-//     const auth = core.getInput('repo-token', { required: true });
-//     const octokit = new Octokit({
-//         auth,
-//     });
-//     const tags = await getTags({
-//         filter: `${newTag.split('-')[0]}-*`,
-//         orderBy: 'desc',
-//     });
-//     console.log('tags :: ', tags);
-//     const latestTag = tags[1];
-//     const latestTagID = await getTagID(latestTag);
-//     console.log('latestTag :: ', latestTag);
-//     console.log('latestTagID :: ', latestTagID);
-//     console.log('newTag :: ', newTag);
-//     console.log('newTagID :: ', newTagID);
-//     const timeline = octokit.paginate.iterator(
-//         octokit.repos.compareCommits.endpoint.merge({
-//             owner,
-//             repo,
-//             base: latestTagID.substring(0, 7),
-//             head: newTagID.substring(0, 7),
-//         })
-//     );
-//     const commitItems = [];
-//     for await (const response of timeline) {
-//         const { data: compareCommits } = response;
-//         console.log('compareCommits :: ', compareCommits);
-//         // commitItems.push(...compareCommits.commits)
-//     }
-//     // await octokit.rest.pulls.update({
-//     //     owner,
-//     //     repo,
-//     //     pull_number: pullNumber,
-//     //     title: `${title} [test-suffix]`,
-//     // });
-//     console.log('Succed executed');
-// }
 
 
 /***/ }),
