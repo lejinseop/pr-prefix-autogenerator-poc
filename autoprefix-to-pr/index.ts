@@ -58,14 +58,15 @@ const solution = async () => {
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
-    const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
+    // const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
+    const header = ['### 변경된 프로젝트\n', `labels: ${labels.join(',')}`];
 
     await octokit.rest.pulls.update({
         owner,
         repo,
         pull_number: pullNumber,
         title: `${title} [test-suffix]`,
-        body: `${header.join('')}\r\n${body}`,
+        body: `${header.join('')}\n\n${body}`,
     });
 
     console.log('Succed executed');
