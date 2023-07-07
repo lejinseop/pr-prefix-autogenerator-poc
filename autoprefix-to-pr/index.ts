@@ -59,7 +59,13 @@ const solution = async () => {
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
     // const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
-    const header = ['### 변경된 프로젝트\n', `labels: ${labels.join(',')}`];
+    const header = [
+        '----------\n', 
+        '### 변경된 프로젝트\n',
+        '<span style="color: #f7ddbe">이 영역을 변경하지 마세요. 릴리즈 노트 생성을 위한 영역입니다.</span>',
+        `labels: ${labels.join(',')}`, 
+        '\n----------'
+    ];
 
     await octokit.rest.pulls.update({
         owner,
