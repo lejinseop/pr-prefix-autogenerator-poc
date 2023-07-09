@@ -17,14 +17,12 @@ const exec = promisify(childProcess.exec);
  */
 const solution = async () => {
     const { owner, repo } = github.context.repo;
-    const pullRequest = github.context.payload.pull_request;
-    console.log('owner :: ', owner);
-    console.log('repo :: ', repo);
 
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
     const workspaceName = newTag.split('/')[0];
     const newTagID: string = github.context.payload.after;
+    const repoURL = github.context.payload.repository?.html_url || '';
     console.log('workspaceName ::: ', workspaceName);
     const auth = core.getInput('repo-token', { required: true });
 
@@ -68,11 +66,9 @@ const solution = async () => {
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
-        console.log('messageArray ::: ', messageArray);
         const labelsRow = messageArray.find(message => message.startsWith('labels: ')) || '';
-        // const labels = (messageArray[3] || '').replace('\r', '').replace('\n', '').split(',');
-        console.log('labelsRow ::: ', labelsRow);
         const labels = labelsRow.replace('\r', '').replace('\n', '').replace('labels: ', '').split(',');
+
         return labels.includes(workspaceName);
     });
     console.log('verifiedCommits ::: ', verifiedCommits);
@@ -91,7 +87,8 @@ const solution = async () => {
         `${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
         ...changes,
         ``,
-        `고마운 사람${authors.length > 1 ? '들' : ''}: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!`
+        `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
+        `Full Changelog: ${repoURL}/${latestTag}...${newTag}`,
     ];
 
     console.log('++++++++++++++++++++++++++++++');

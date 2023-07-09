@@ -13214,11 +13214,9 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
     })).filter(Boolean);
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
-    // const header = ['### 변경된 프로젝트\r\n', labels.join(','), ''];
     const header = [
         '----------\n',
-        '_이 영역을 변경하지 마세요. 릴리즈 노트 생성을 위한 영역입니다._\n\n',
-        '### 변경된 프로젝트\n\n',
+        '_이 영역은 릴리즈 노트 생성을 위한 영역입니다._\n\n',
         `labels: ${labels.join(',')}`,
         '\n\n----------'
     ];
