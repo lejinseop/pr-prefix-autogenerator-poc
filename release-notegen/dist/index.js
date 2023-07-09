@@ -13920,14 +13920,11 @@ const exec = (0, util_1.promisify)(child_process_1.default.exec);
  * 태그에 해당하는 라벨 포함된 커밋만 추려서 release note 생성
  */
 const solution = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const { owner, repo } = github.context.repo;
     console.log('context :: ', github.context);
     const newTag = github.context.ref.replace('refs/tags/', '');
     const workspaceName = newTag.split('/')[0];
     const newTagID = github.context.payload.after;
-    const repoURL = ((_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.html_url) || '';
-    console.log('workspaceName ::: ', workspaceName);
     const auth = core.getInput('repo-token', { required: true });
     const octokit = new rest_1.Octokit({
         auth,
@@ -13936,9 +13933,14 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         filter: `${newTag.split('-')[0]}-*`,
         orderBy: 'desc',
     });
-    console.log('tags :: ', tags);
-    const latestTag = tags[0] || newTag;
+    const latestTag = tags[0];
     const latestTagID = yield (0, getTagID_1.default)(latestTag);
+    /**
+     * latestTag가 undefined라면?
+     * - 처음 만들어지는 태그라는 뜻
+     * - new tag의 workspace name 정보로 apps/workspace-name 경로 아래 파일의 마지막 수정일 확인 후 그 일자부터 현재까지의 커밋
+     * 목록을 가져와서 작업을 진행하게 한다.
+     */
     console.log('latestTag :: ', latestTag);
     console.log('latestTagID :: ', latestTagID);
     console.log('newTag :: ', newTag);
@@ -13957,6 +13959,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         base: latestTagID.substring(0, 7),
         head: newTagID.substring(0, 7),
     });
+    console.log('commits :: ', commits);
     const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
     const commitsByWorkspace = verifiedCommits.filter(commit => {
         const messageArray = commit.commit.message.split('\n');
@@ -13978,7 +13981,6 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         ...changes,
         ``,
         `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
-        `Full Changelog: ${repoURL}/${latestTag}...${newTag}`,
     ];
     console.log('++++++++++++++++++++++++++++++');
     console.log(changelog.join('\n'));

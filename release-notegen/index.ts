@@ -22,8 +22,6 @@ const solution = async () => {
     const newTag = github.context.ref.replace('refs/tags/', '');
     const workspaceName = newTag.split('/')[0];
     const newTagID: string = github.context.payload.after;
-    const repoURL = github.context.payload.repository?.html_url || '';
-    console.log('workspaceName ::: ', workspaceName);
     const auth = core.getInput('repo-token', { required: true });
 
     const octokit = new Octokit({
@@ -35,10 +33,15 @@ const solution = async () => {
         orderBy: 'desc',
     });
 
-    console.log('tags :: ', tags);
-
-    const latestTag = tags[0] || newTag;
+    const latestTag = tags[0];
     const latestTagID = await getTagID(latestTag);
+
+    /**
+     * latestTag가 undefined라면?
+     * - 처음 만들어지는 태그라는 뜻
+     * - new tag의 workspace name 정보로 apps/workspace-name 경로 아래 파일의 마지막 수정일 확인 후 그 일자부터 현재까지의 커밋
+     * 목록을 가져와서 작업을 진행하게 한다.
+     */
 
     console.log('latestTag :: ', latestTag);
     console.log('latestTagID :: ', latestTagID);
@@ -62,6 +65,8 @@ const solution = async () => {
         base: latestTagID.substring(0, 7),
         head: newTagID.substring(0, 7),
     });
+
+    console.log('commits :: ', commits);
 
     const verifiedCommits = commits.data.commits.filter(commit => commit.commit.verification?.verified)
     const commitsByWorkspace = verifiedCommits.filter(commit => {
@@ -88,7 +93,6 @@ const solution = async () => {
         ...changes,
         ``,
         `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
-        `Full Changelog: ${repoURL}/${latestTag}...${newTag}`,
     ];
 
     console.log('++++++++++++++++++++++++++++++');
