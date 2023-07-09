@@ -37,7 +37,7 @@ const solution = async () => {
 
     console.log('tags :: ', tags);
 
-    const latestTag = tags[1];
+    const latestTag = tags[0] || newTag;
     const latestTagID = await getTagID(latestTag);
 
     console.log('latestTag :: ', latestTag);

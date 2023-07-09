@@ -13937,7 +13937,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         orderBy: 'desc',
     });
     console.log('tags :: ', tags);
-    const latestTag = tags[1];
+    const latestTag = tags[0] || newTag;
     const latestTagID = yield (0, getTagID_1.default)(latestTag);
     console.log('latestTag :: ', latestTag);
     console.log('latestTagID :: ', latestTagID);
