@@ -41,8 +41,8 @@ const solution = async () => {
      * - new tag의 workspace name 정보로 apps/workspace-name 경로 아래 파일의 마지막 수정일 확인 후 그 일자부터 현재까지의 커밋
      * 목록을 가져와서 작업을 진행하게 한다.
      */
-    if (tags.length > 0) {
-        const latestTag = tags[1]; // fe-monorepo에서는 0번?
+    const latestTag = tags[1]; // fe-monorepo에서는 0번?
+    if (latestTag) {
         const latestTagID = await getTagID(latestTag);
 
         console.log('latestTag :: ', latestTag);
