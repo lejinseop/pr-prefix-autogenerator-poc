@@ -13977,7 +13977,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         return `- ${shortMessage} @${getAuthor(commit)}`;
     });
     const changelog = [
-        `${authors.length}명의 ✨빛나는✨ 기여자 분 ${authors.length > 1 ? '들' : ''} 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
+        `${authors.length}명의 ✨빛나는✨ 버디즈가 기여해주신 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
         ...changes,
         ``,
         `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
