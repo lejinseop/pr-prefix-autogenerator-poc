@@ -22,7 +22,7 @@ const getTags: GetTags = async ({ filter, orderBy = 'asc' }) => {
     [`git`, `tag`, `-l`, ...(filter ? [filter] : []), ORDER_BY_OPTION_MAP[orderBy]].join(' '),
   );
 
-  return tagsString?.split('\n') || [];
+  return tagsString?.split('\n').filter(Boolean) || [];
 };
 
 export default getTags;

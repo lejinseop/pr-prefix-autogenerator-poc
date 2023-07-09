@@ -13857,7 +13857,7 @@ const ORDER_BY_OPTION_MAP = {
 };
 const getTags = ({ filter, orderBy = 'asc' }) => __awaiter(void 0, void 0, void 0, function* () {
     const { stdout: tagsString } = yield exec([`git`, `tag`, `-l`, ...(filter ? [filter] : []), ORDER_BY_OPTION_MAP[orderBy]].join(' '));
-    return (tagsString === null || tagsString === void 0 ? void 0 : tagsString.split('\n')) || [];
+    return (tagsString === null || tagsString === void 0 ? void 0 : tagsString.split('\n').filter(Boolean)) || [];
 });
 exports["default"] = getTags;
 
@@ -13933,7 +13933,7 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         filter: `${newTag.split('-')[0]}-*`,
         orderBy: 'desc',
     });
-    const latestTag = tags[0];
+    const latestTag = tags[1]; // fe-monorepo에서는 0번?
     const latestTagID = yield (0, getTagID_1.default)(latestTag);
     /**
      * latestTag가 undefined라면?

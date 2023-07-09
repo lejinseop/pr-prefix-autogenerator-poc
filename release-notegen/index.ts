@@ -33,7 +33,7 @@ const solution = async () => {
         orderBy: 'desc',
     });
 
-    const latestTag = tags[0];
+    const latestTag = tags[1]; // fe-monorepo에서는 0번?
     const latestTagID = await getTagID(latestTag);
 
     /**
