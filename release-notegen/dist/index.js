@@ -13933,58 +13933,66 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         filter: `${newTag.split('-')[0]}-*`,
         orderBy: 'desc',
     });
-    const latestTag = tags[1]; // fe-monorepo에서는 0번?
-    const latestTagID = yield (0, getTagID_1.default)(latestTag);
+    const changelog = [];
     /**
      * latestTag가 undefined라면?
      * - 처음 만들어지는 태그라는 뜻
      * - new tag의 workspace name 정보로 apps/workspace-name 경로 아래 파일의 마지막 수정일 확인 후 그 일자부터 현재까지의 커밋
      * 목록을 가져와서 작업을 진행하게 한다.
      */
-    console.log('latestTag :: ', latestTag);
-    console.log('latestTagID :: ', latestTagID);
-    console.log('newTag :: ', newTag);
-    console.log('newTagID :: ', newTagID);
-    const getAuthor = (commit) => {
-        var _a;
-        if (!commit.author) {
-            console.warn(`The author of the commit: ${commit.commit.tree.url} cannot be retrieved. Please add the github username manually.`);
-            return "TODO INSERT AUTHOR'S USERNAME";
-        }
-        return (_a = commit.author) === null || _a === void 0 ? void 0 : _a.login;
-    };
-    const commits = yield octokit.repos.compareCommits({
-        owner,
-        repo,
-        base: latestTagID.substring(0, 7),
-        head: newTagID.substring(0, 7),
-    });
-    console.log('commits :: ', commits);
-    const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
-    const commitsByWorkspace = verifiedCommits.filter(commit => {
-        const messageArray = commit.commit.message.split('\n');
-        const labelsRow = messageArray.find(message => message.startsWith('labels: ')) || '';
-        const labels = labelsRow.replace('\r', '').replace('\n', '').replace('labels: ', '').split(',');
-        return labels.includes(workspaceName);
-    });
-    console.log('verifiedCommits ::: ', verifiedCommits);
-    console.log('commitsByWorkspace ::: ', commitsByWorkspace);
-    const authors = Array.from(new Set(commitsByWorkspace.map(commit => {
-        return getAuthor(commit);
-    })));
-    const changes = commitsByWorkspace.map(commit => {
-        const shortMessage = commit.commit.message.split('\n')[0];
-        return `- ${shortMessage} @${getAuthor(commit)}`;
-    });
-    const changelog = [
-        `${authors.length}명의 ✨빛나는✨ 버디즈가 기여해주신 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
-        ...changes,
-        ``,
-        `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
-    ];
-    console.log('++++++++++++++++++++++++++++++');
-    console.log(changelog.join('\n'));
-    console.log('++++++++++++++++++++++++++++++');
+    if (tags.length > 0) {
+        const latestTag = tags[1]; // fe-monorepo에서는 0번?
+        const latestTagID = yield (0, getTagID_1.default)(latestTag);
+        console.log('latestTag :: ', latestTag);
+        console.log('latestTagID :: ', latestTagID);
+        console.log('newTag :: ', newTag);
+        console.log('newTagID :: ', newTagID);
+        const getAuthor = (commit) => {
+            var _a;
+            if (!commit.author) {
+                console.warn(`The author of the commit: ${commit.commit.tree.url} cannot be retrieved. Please add the github username manually.`);
+                return "TODO INSERT AUTHOR'S USERNAME";
+            }
+            return (_a = commit.author) === null || _a === void 0 ? void 0 : _a.login;
+        };
+        const commits = yield octokit.repos.compareCommits({
+            owner,
+            repo,
+            base: latestTagID.substring(0, 7),
+            head: newTagID.substring(0, 7),
+        });
+        console.log('commits :: ', commits);
+        const verifiedCommits = commits.data.commits.filter(commit => { var _a; return (_a = commit.commit.verification) === null || _a === void 0 ? void 0 : _a.verified; });
+        const commitsByWorkspace = verifiedCommits.filter(commit => {
+            const messageArray = commit.commit.message.split('\n');
+            const labelsRow = messageArray.find(message => message.startsWith('labels: ')) || '';
+            const labels = labelsRow.replace('\r', '').replace('\n', '').replace('labels: ', '').split(',');
+            return labels.includes(workspaceName);
+        });
+        console.log('verifiedCommits ::: ', verifiedCommits);
+        console.log('commitsByWorkspace ::: ', commitsByWorkspace);
+        const authors = Array.from(new Set(commitsByWorkspace.map(commit => {
+            return getAuthor(commit);
+        })));
+        const changes = commitsByWorkspace.map(commit => {
+            const shortMessage = commit.commit.message.split('\n')[0];
+            return `- ${shortMessage} @${getAuthor(commit)}`;
+        });
+        changelog.push(...[
+            `${authors.length}명의 ✨빛나는✨ 버디즈가 기여해주신 덕분에 릴리즈 할 수 있었어요~ 감사합니다!`,
+            ...changes,
+            ``,
+            `기여자: ${authors.map(author => `@${author}`).join(',')} 야 고마워!!\n`,
+        ]);
+        console.log('++++++++++++++++++++++++++++++');
+        console.log(changelog.join('\n'));
+        console.log('++++++++++++++++++++++++++++++');
+    }
+    else {
+        changelog.push(...[
+            `${workspaceName} 프로젝트의 첫 릴리즈입니다! 모두들 응원해주세요!`
+        ]);
+    }
     yield octokit.rest.repos.createRelease({
         owner,
         repo,
