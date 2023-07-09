@@ -6,3 +6,5 @@ this is service 2
 this is service 2
 
 service 2 update!
+
+global update

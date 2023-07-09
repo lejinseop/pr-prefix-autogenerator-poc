@@ -3,3 +3,5 @@ Service 4
 haha
 hohoh
 all!
+
+global update
