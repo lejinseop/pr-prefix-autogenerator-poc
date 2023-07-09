@@ -13930,9 +13930,11 @@ const solution = () => __awaiter(void 0, void 0, void 0, function* () {
         auth,
     });
     const tags = yield (0, getTags_1.default)({
-        filter: `${newTag.split('-')[0]}-*`,
+        // filter: `${newTag.split('-')[0]}-*`,
+        filter: `${workspaceName}/prd/*`,
         orderBy: 'desc',
     });
+    console.log('tags :: ', tags);
     const changelog = [];
     /**
      * latestTag가 undefined라면?

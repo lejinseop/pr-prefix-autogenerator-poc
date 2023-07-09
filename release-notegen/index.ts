@@ -29,10 +29,12 @@ const solution = async () => {
     });
 
     const tags = await getTags({
-        filter: `${newTag.split('-')[0]}-*`,
+        // filter: `${newTag.split('-')[0]}-*`,
+        filter: `${workspaceName}/prd/*`,
         orderBy: 'desc',
     });
 
+    console.log('tags :: ', tags);
     const changelog = [];
 
     /**

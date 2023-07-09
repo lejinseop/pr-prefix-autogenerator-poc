@@ -58,6 +58,7 @@ const solution = async () => {
     console.log('updatedFiles :: ', updatedFiles);
     const labels = updatedFiles.map(file => file.split('/')[1].split('.')[0]);
 
+    // 기존에 pull request가 열려있다가 내용이 update되는 상황이라면? 그땐 기존 label과 신규 label을 비교해서 업데이트 해줘야함
     const header = [
         '----------\n', 
         '_이 영역은 릴리즈 노트 생성을 위한 영역입니다._\n\n',
