@@ -10,3 +10,5 @@ this is service 3
 all!
 
 this is service 3~ update
+
+global update

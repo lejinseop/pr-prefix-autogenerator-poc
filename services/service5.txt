@@ -1,2 +1,4 @@
 service5
 all!
+
+global update
